@@ -1,0 +1,23 @@
+{
+  "name": "parser",
+  "version": "0.0.0",
+  "homepage": "https://github.com/labcoders/crystalball-knife-bomb",
+  "authors": [
+    "Guillaume <gumgl@users.noreply.github.com>"
+  ],
+  "description": "parser for our emoji language",
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery-emoji-picker": "~0.1.2"
+  }
+}

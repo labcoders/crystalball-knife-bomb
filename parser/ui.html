@@ -1,0 +1,36 @@
+<html>
+<head>
+<title>Emoji!</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="bower_components/jquery-emoji-picker/css/jquery.emojipicker.css">
+<script type="text/javascript" src="bower_components/jquery-emoji-picker/js/jquery.emojipicker.js"></script>
+
+<!-- Emoji Data -->
+<link rel="stylesheet" type="text/css" href="bower_components/jquery-emoji-picker/css/jquery.emojipicker.a.css">
+<script type="text/javascript" src="bower_components/jquery-emoji-picker/js/jquery.emojipicker.a.js"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#input').emojiPicker({height: '300px', width: '450px'});
+		$("#output").html("\u270C");
+	});
+</script>
+</head>
+<body>
+
+<form style="text-align: center;">
+
+	<div style="width:100%">
+		<input type="text" id="input" style="font-size:large;width:300px;padding:10px;" />
+	</div>
+
+	<br><br>
+
+	<p id="output" style='font-size: large; font-family: "Apple Color Emoji", "Segoe UI Emoji", "NotoColorEmoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols";'>
+	before
+	</p>
+</form>
+
+</body>
+</html>
