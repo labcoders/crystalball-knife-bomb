@@ -18,6 +18,7 @@ function replace(name, index, array){
 }
 
 $(document).on("keypress", function() {
+   
     if (event.which == 13) {
         line = editor.selection.getCursor()["row"];
     
@@ -35,3 +36,28 @@ $(document).on("keypress", function() {
     };
 });
 
+function genTable(){
+	var nameToUni = {}
+	for (var i=0; i < emojis.length; i++) {
+
+		nameToUni[emojis[i].name.toLowerCase()] = emojis[i].unified;
+	}
+
+	console.log(nameToUni);
+}
+
+
+function genHTML(){
+
+
+}
+
+/*
+'<button class="'+ classname + '" data-category="'+category+'">
+    <h3 class="short-name">' + shortname +'</h3>
+    <p class="emoji">' +symbol+'</p>
+    <p class="unicode">' + unicode + '</p>
+  </button>
+  '
+
+  */

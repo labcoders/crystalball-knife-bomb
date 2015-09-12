@@ -17,6 +17,9 @@
 "\u27A1\uFE0F"        return 'BIND';
 "\uD83C\uDF1Cs"       return "LPAREN";
 "\uD83C\uDF1B"        return "RPAREN";
+"\uD83D\uDC48"        return "RBRACKET";
+"\uD83D\uDC49"        return "LBRACKET";
+"\u261D\uFE0F"        return "ASEP"; 
 
 "\uD83D\uDC4D"             return 'TRUE';
 "\uD83D\uDC4E"             return 'FALSE';
@@ -26,6 +29,9 @@
 \u270C[^\u270C]\u270C return 'STR_LIT';
 "\u270C"              return 'DQUOTE';
 "\u2796"              return 'SEP';
+
+"\uD83D\uDCE6"        return 'PACKAGE';
+"\uD83D\uDCC8"        return 'FUNCTION';
 
 <<EOF>>               return 'EOF';
 .                     return 'INVALID';
@@ -80,6 +86,9 @@ ident : IDENT %{
 literal : int_lit -> { int: $1 }
         | bool_lit -> { bool: $1 }
         | str_lit -> { str: $1 }
+        | array_lit -> {tuple: $1}
+        | obj_lit -> { obj: $1 }
+        | func_lit -> {func: $1 }
         ;
 
 int_lit : DIGIT+ END_NUMBER -> Number($1.map(function(e) { return e[0] }).join(""))
@@ -91,3 +100,16 @@ bool_lit : TRUE -> true
 
 str_lit : STR_LIT
         ;
+      
+array_lit : LBRACKET array_content RBRACKET -> $2
+          ;
+
+array_content : value -> [$1]
+              | value ASEP array_content -> [$1].concat[$3]
+              ;
+
+obj_lit : PACKAGE ident value? -> {name: $ident, value: $value}
+        ;
+
+func_lit : FUNCTION idents BIND value -> {name: null, params: $idents, body: $value}
+         ;
