@@ -1,10 +1,13 @@
-var process = require("process");
 var fs = require("fs");
 
-var emoji = require("emoji");
+var emoji = require("./emoji");
 
-var input = fs.readFileSync(process.argv[1]);
+var input = fs.readFileSync(process.argv[2]);
 
-var ir = emoji.parse(input);
+console.log(input);
 
+console.log("PARSING");
+var ir = emoji.parse(input.toString());
+
+console.log(ir);
 console.log(JSON.stringify(ir));

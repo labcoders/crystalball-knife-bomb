@@ -10,7 +10,7 @@
 "!"                   return 'END_NUMBER';
 
 "\u{1F1FA}\u{1F1F8}"  return 'FUNC'; /* US flag */
-"\u1F6A2"             return 'IMPORT'; /* ship/boat */
+"\uD83D\uDEA2"        return 'IMPORT';
 "\u1F525"             return 'EXTERN' /* fire */
 
 ","                   return 'SEP';
@@ -21,8 +21,8 @@
 "\u1F44D"             return 'TRUE';
 "\u1F44E"             return 'FALSE';
 
-/* (?!(\u270C|\u2796|\u1F6A2|[\u0030-\u0039]\u20E3).)+ return 'IDENT'; */
-[a-zA-Z]              return 'IDENT';
+((?!\u270C|\u2796|[\u0030-\u0039]\u20E3|\uD83D\uDEA2).)+ return 'IDENT';
+/*[a-zA-Z]              return 'IDENT';*/
 
 \u270C[^\u270C]\u270C return 'STR_LIT';
 "\u270C"              return 'DQUOTE';
@@ -63,12 +63,12 @@ import_decl : IMPORT ident -> { name: $2 }
 ffi_decl : EXTERN ident str_lit -> { name: $2, externalName: $3 }
          ;
 
-value : LPAREN value RPAREN -> { invocation: $1 }
+value : LPAREN value RPAREN -> { invocation: $2 }
       | idents
       | literal -> { literal: $1 }
       ;
 
-ident : IDENT -> { ident: $1.join("") }
+ident : IDENT -> { ident: $1 }
       ;
 
 literal : int_lit -> { int: $1 }
