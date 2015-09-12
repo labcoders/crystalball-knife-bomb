@@ -45,33 +45,26 @@ $(document).on("keypress", function() {
 function genTable(){
 	var nameToUni = {}
 	for (var i=0; i < emojis.length; i++) {
-
 		nameToUni[emojis[i].name.toLowerCase()] = emojis[i].unified;
 	}
-
 	console.log(nameToUni);
 }
 
 
 function genHTML(){
-
 	classname = "CLASSNAME";
 	category = "CATERGORY";
 	htmlString = "\n";
-
-
 	for (var key in emojiObject) {
 	  if (emojiObject.hasOwnProperty(key)) {
 	   
 	   shortname = ":"+key.toString()+":"
 	   symbol = String.fromCharCode(parseInt(emojiObject[key], 16));
 	   unicode = emojiObject[key];
-
-	htmlString + '<button class="'+ classname + '" data-category="'+category+'"> +\n'+'<h3 class="short-name">' + shortname + '</h3> '+'\n'+ '<p class="emoji">'+symbol+'</p>'+'\n'+'<p class="unicode">' + unicode + '</p> +\n'+' </button>'+"\n"
-	
+	string = '<button class="'+ classname + '" data-category="'+category+'"> +\n'+'<h3 class="short-name">' + shortname + '</h3> '+'\n'+ '<p class="emoji">'+symbol+'</p>'+'\n'+'<p class="unicode">' + unicode + '</p> +\n'+' </button>'+"\n"
+	console.log(string)
 	}
-
-console.log(htmlString)
+//console.log(htmlString)
 }
 
 }
