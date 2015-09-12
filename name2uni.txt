@@ -1,5 +1,5 @@
-emojis = {
-"aerial tramway": "1F6A1",
+emojis = 
+{"aerial tramway": "1F6A1",
 "airplane": "2708",
 "alarm clock": "23F0",
 "alien monster": "1F47E","ambulance": "1F691",
