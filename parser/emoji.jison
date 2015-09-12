@@ -82,7 +82,7 @@ literal : int_lit -> { int: $1 }
         | str_lit -> { str: $1 }
         ;
 
-int_lit : DIGIT+ END_NUMBER -> Number($1.join(""))
+int_lit : DIGIT+ END_NUMBER -> Number($1.map(function(e) { return e[0] }).join(""))
         ;
 
 bool_lit : TRUE -> true
