@@ -107,8 +107,8 @@ array_content : value -> [$1]
               | value ASEP array_content -> [$1].concat($3)
               ;
 
-obj_lit : PACKAGE ident value? -> {name: $ident, value: $value}
+obj_lit : PACKAGE ident value? -> {name: $ident, value: $3}
         ;
 
-func_lit : FUNCTION idents BIND value -> {name: null, params: $idents, body: $value}
+func_lit : FUNCTION idents BIND value -> {name: null, params: $2, body: $4}
          ;
