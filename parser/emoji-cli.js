@@ -7,7 +7,7 @@ var input = fs.readFileSync(process.argv[2]);
 console.log(input);
 
 console.log("PARSING");
-var ir = emoji.parse(input.toString());
+var ir = emoji.parser.parse(input.toString());
 
 console.log(ir);
 console.log(JSON.stringify(ir));
