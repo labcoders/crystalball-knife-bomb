@@ -9,9 +9,9 @@
 \u0030\u20E3|\u0031\u20E3|\u0032\u20E3|\u0033\u20E3|\u0034\u20E3|\u0035\u20E3|\u0036\u20E3|\u0037\u20E3|\u0038\u20E3|\u0039\u20E3 return 'DIGIT';
 "!"                   return 'END_NUMBER';
 
-"\u{1F1FA}\u{1F1F8}"  return 'FUNC'; /* US flag */
+"\uD83C\uDFF4"        return 'FUNC'; /* waving black flag */
 "\uD83D\uDEA2"        return 'IMPORT';
-"\u{1F525}"             return 'EXTERN' /* fire */
+"\u{1F525}"           return 'EXTERN' /* fire */
 
 ","                   return 'SEP';
 "<"                   return 'BIND';
@@ -21,8 +21,7 @@
 "t"             return 'TRUE';
 "f"             return 'FALSE';
 
-((?!\u270C|\u2796|[\u0030-\u0039]\u20E3|\uD83D\uDEA2).)+ return 'IDENT';
-/*[a-zA-Z]              return 'IDENT';*/
+((?!\u270C|\u2796|[\u0030-\u0039]\u20E3|\uD83D\uDEA2|\uD83C\uDFF4|\<|\,).)+ return 'IDENT';
 
 \u270C[^\u270C]\u270C return 'STR_LIT';
 "\u270C"              return 'DQUOTE';
@@ -48,13 +47,17 @@ decl : func_decl -> { func: $1 }
      | ffi_decl -> { ffi_decl: $1 }
      ;
 
-func_decl : FUNC idents BIND value %{ $$ = {
-    name: $2[0],
-    params: $2.splice(0, 1),
-    body: $3
-}; }% ;
+func_decl : FUNC idents BIND value %{ 
+    // console.log($2);
+    $$ = {
+        name: $2[0],
+        params: $2.slice(1),
+        body: $4
+    }; 
+}% ;
 
-idents : ident (SEP ident)* -> [$1].concat($2)
+idents : ident { console.log($1) ; $$ = [$1] }
+       | ident SEP idents -> [$1].concat($3)
        ;
 
 import_decl : IMPORT ident { $$ = { name: $2 }; }
@@ -68,7 +71,10 @@ value : LPAREN value RPAREN -> { invocation: $2 }
       | literal -> { literal: $1 }
       ;
 
-ident : IDENT { $$ = { ident: $1 }; }
+ident : IDENT %{ 
+    // console.log($1);
+    $$ = { ident: $1 }; 
+}%
       ;
 
 literal : int_lit -> { int: $1 }
