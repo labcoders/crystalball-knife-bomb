@@ -816,22 +816,22 @@ var emojis = {"aerial tramway": "1F6A1",
 
 var emojiObject = JSON.parse(JSON.stringify(emojis));
 
-function uniChar(n) {
-    var result = n;
-    try {
-        var num = parseInt(emojis[n], 16);
-        result = String.fromCharCode(num);
-        return result;
-    }
-    catch(e) {
-        return n;
-    }
-}
-
-function replace(name, index, array){
-    array.splice(index, 1);
-    array.splice(index, 0, uniChar(name));
-}
+//function uniChar(n) {
+//    var result = n;
+//    try {
+//        var num = parseInt(emojis[n], 16);
+//        result = String.fromCharCode(num);
+//        return result;
+//    }
+//    catch(e) {
+//        return n;
+//    }
+//}
+//
+//function replace(name, index, array){
+//    array.splice(index, 1);
+//    array.splice(index, 0, uniChar(name));
+//}
 
 $(document).on("keypress", function() {
     if (event.which == 13) {
