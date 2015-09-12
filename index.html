@@ -1,38 +1,237 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head>  
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Editor</title>
-  <style type="text/css" media="screen">
-    body {
-        overflow: hidden;
-    }
-    #editor {
-        margin: 0;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-    }
-  </style>
+  <title>💣 </title>
+  
+ <script src="splitter.js"></script> 
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/2.2.2/isotope.pkgd.js"></script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <!-- get rid of this later for deployment -->
+  <link rel="stylesheet" type="text/css" href="style.css" media="screen">
 </head>
 <body>
 
-<pre id="editor">function foo(items) {
-    var i;
-    for (i = 0; i &lt; items.length; i++) {
-        alert("Ace Rocks " + items[i]);
-    }
-}</pre>
 
+<script type="text/javascript">
+// external js: isotope.pkgd.js
+
+$( document ).ready( function() {
+
+  // init Isotope
+  var $container = $('.isotope').isotope({
+    itemSelector: '.element-item',
+    layoutMode: 'fitRows',
+    getSortData: {
+      name: '.name',
+      symbol: '.symbol',
+      number: '.number parseInt',
+      category: '[data-category]',
+      unicode: function( itemElem ) {
+        var unicode = $( itemElem ).find('.unicode').text();
+        return parseFloat( unicode.replace( /[\(\)]/g, '') );
+      }
+    }
+  });
+
+   $().ready(function(){
+   $("#MySplitter").splitter();
+ });
+
+  // filter functions
+  var filterFns = {
+    // show if number is greater than 50
+    numberGreaterThan50: function() {
+      var number = $(this).find('.number').text();
+      return parseInt( number, 10 ) > 50;
+    },
+    // show if name ends with -ium
+    ium: function() {
+      var name = $(this).find('.name').text();
+      return name.match( /ium$/ );
+    }
+  };
+
+  // bind filter button click
+  $('#filters').on( 'click', 'button', function() {
+    var filterValue = $( this ).attr('data-filter');
+    // use filterFn if matches value
+    filterValue = filterFns[ filterValue ] || filterValue;
+    $container.isotope({ filter: filterValue });
+  });
+
+  // bind sort button click
+  $('#sorts').on( 'click', 'button', function() {
+    var sortByValue = $(this).attr('data-sort-by');
+    $container.isotope({ sortBy: sortByValue });
+  });
+  
+  // change is-checked class on buttons
+  $('.button-group').each( function( i, buttonGroup ) {
+    var $buttonGroup = $( buttonGroup );
+    $buttonGroup.on( 'click', 'button', function() {
+      $buttonGroup.find('.is-checked').removeClass('is-checked');
+      $( this ).addClass('is-checked');
+    });
+  });
+  
+});
+</script>
+
+<div id="topBar">
+</div>
+<div id="MySplitter">
+
+<div id="LeftPane">
+
+<div id="editor">Enter Code Here</div>
 <script src="src/ace.js" type="text/javascript" charset="utf-8"></script>
 <script>
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/twilight");
     editor.getSession().setMode("ace/mode/javascript");
+    //editor.resize(true);
 </script>
+
+<div id="output">
+</div>
+
+</div>
+
+<div id="RightPane">
+  <div id="list">
+
+<h1>Emoji Sorting</h1>
+<h2>Filter</h2>
+<div id="filters" class="button-group">  <button class="button is-checked" data-filter="*">show all</button>
+  <button class="button" data-filter=".metal">metal</button>
+  <button class="button" data-filter=".transition">transition</button>
+  <button class="button" data-filter=".alkali, .alkaline-earth">alkali and alkaline-earth</button>
+  <button class="button" data-filter=":not(.transition)">not transition</button>
+  <button class="button" data-filter=".metal:not(.transition)">metal but not transition</button>
+  <button class="button" data-filter="unicodeGreaterThan50">unicode > 50</button>
+  <button class="button" data-filter="ium">short-name ends with &ndash;ium</button>
+</div>
+
+<h2>Sort</h2>
+<div id="sorts" class="button-group">  <button class="button is-checked" data-sort-by="original-order">original order</button>
+  <button class="button" data-sort-by="short-name">short-name</button>
+  <button class="button" data-sort-by="emoji">emoji</button>
+  <button class="button" data-sort-by="unicode">unicode</button>
+  <button class="button" data-sort-by="category">category</button>
+</div>
+
+<div class="isotope">
+  <button class="element-item transition metal " data-category="transition">
+    <h3 class="short-name">:bomb:</h3>
+    <p class="emoji">💣</p>
+    <p class="unicode">80</p>
+  </button>
+  <button class="element-item metalloid " data-category="metalloid">
+    <h3 class="short-name">Tellurium</h3>
+    <p class="emoji">Te</p>
+    <p class="unicode">52</p>
+  </button>
+  <button class="element-item post-transition metal " data-category="post-transition">
+    <h3 class="short-name">Bismuth</h3>
+    <p class="emoji">Bi</p>
+    <p class="unicode">83</p>
+  </button>
+  <button class="element-item post-transition metal " data-category="post-transition">
+    <h3 class="short-name">Lead</h3>
+    <p class="emoji">Pb</p>
+    <p class="unicode">82</p>
+  </button>
+  <button class="element-item transition metal " data-category="transition">
+    <h3 class="short-name">Gold</h3>
+    <p class="emoji">Au</p>
+    <p class="unicode">79</p>
+  </button>
+  <button class="element-item alkali metal " data-category="alkali">
+    <h3 class="short-name">Potassium</h3>
+    <p class="emoji">K</p>
+    <p class="unicode">19</p>
+  </button>
+  <button class="element-item alkali metal " data-category="alkali">
+    <h3 class="short-name">Sodium</h3>
+    <p class="emoji">Na</p>
+    <p class="unicode">11</p>
+  </button>
+  <button class="element-item transition metal " data-category="transition">
+    <h3 class="short-name">Cadmium</h3>
+    <p class="emoji">Cd</p>
+    <p class="unicode">48</p>
+  </button>
+  <button class="element-item alkaline-earth metal " data-category="alkaline-earth">
+    <h3 class="short-name">Calcium</h3>
+    <p class="emoji">Ca</p>
+    <p class="unicode">20</p>
+  </button>
+  <button class="element-item transition metal " data-category="transition">
+    <h3 class="short-name">Rhenium</h3>
+    <p class="emoji">Re</p>
+    <p class="unicode">75</p>
+  </button>
+  <button class="element-item post-transition metal " data-category="post-transition">
+    <h3 class="short-name">Thallium</h3>
+    <p class="emoji">Tl</p>
+    <p class="unicode">81</p>
+  </button>
+  <button class="element-item metalloid " data-category="metalloid">
+    <h3 class="short-name">Antimony</h3>
+    <p class="emoji">Sb</p>
+    <p class="unicode">51</p>
+  </button>
+  <button class="element-item transition metal " data-category="transition">
+    <h3 class="short-name">Cobalt</h3>
+    <p class="emoji">Co</p>
+    <p class="unicode">27</p>
+  </button>
+  <button class="element-item lanthanoid metal inner-transition " data-category="lanthanoid">
+    <h3 class="short-name">Ytterbium</h3>
+    <p class="emoji">Yb</p>
+    <p class="unicode">70</p>
+  </button>
+  <button class="element-item noble-gas nonmetal " data-category="noble-gas">
+    <h3 class="short-name">Argon</h3>
+    <p class="emoji">Ar</p>
+    <p class="unicode">18</p>
+  </button>
+  <button class="element-item diatomic nonmetal " data-category="diatomic">
+    <h3 class="short-name">Nitrogen</h3>
+    <p class="emoji">N</p>
+    <p class="unicode">7</p>
+  </button>
+  <button class="element-item actinoid metal inner-transition " data-category="actinoid">
+    <h3 class="short-name">Uranium</h3>
+    <p class="emoji">U</p>
+    <p class="unicode">92</p>
+  </button>
+  <button class="element-item actinoid metal inner-transition " data-category="actinoid">
+    <h3 class="short-name">Plutonium</h3>
+    <p class="emoji">Pu</p>
+    <p class="unicode">94</p>
+  </button>
+    <button class="element-item transition metal " data-category="transition">
+    <h3 class="short-name">:bomb:</h3>
+    <p class="emoji">💣</p>
+    <p class="unicode">80</p>
+  </button>
+  
+</div>
+
+
+
+   </div>
+
+ </div>
+</div>
+
 
 </body>
 </html>
+
+
