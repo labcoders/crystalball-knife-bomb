@@ -10,16 +10,16 @@
 "!"                   return 'END_NUMBER';
 
 "\uD83C\uDFF4"        return 'FUNC'; /* waving black flag */
-"\uD83D\uDEA2"        return 'IMPORT';
-"\u{1F525}"           return 'EXTERN' /* fire */
+"\u260E\uFE0F"        return 'IMPORT'; /* black telephone*/ 
+"\u{2623}"            return 'EXTERN' /*radioactive symbol */
 
-","                   return 'SEP';
-"<"                   return 'BIND';
-"("                   return "LPAREN";
-")"                   return "RPAREN";
+"\uD83D\uDCCF"        return 'SEP';
+"\u27A1\uFE0F"        return 'BIND';
+"\uD83C\uDF1Cs"       return "LPAREN";
+"\uD83C\uDF1B"        return "RPAREN";
 
-"t"             return 'TRUE';
-"f"             return 'FALSE';
+"\uD83D\uDC4D"             return 'TRUE';
+"\uD83D\uDC4E"             return 'FALSE';
 
 ((?!\u270C|\u2796|[\u0030-\u0039]\u20E3|\uD83D\uDEA2|\uD83C\uDFF4|\<|\,).)+ return 'IDENT';
 
