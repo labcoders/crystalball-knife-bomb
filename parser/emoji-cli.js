@@ -17,3 +17,5 @@ var codegen = require("./codegen");
 var compiled = codegen.traverse(ir);
 
 console.log("Compiled:\n"+compiled);
+
+fs.writeFileSync("a.out.js", compiled);
