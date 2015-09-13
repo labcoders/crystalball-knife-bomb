@@ -2,16 +2,19 @@
 <html lang="en">
 <head>  
   <meta charset="UTF-8">
+
+  <title>💣 </title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <title>&#128302;&#128298;💣</title>
- 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> 
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/2.2.2/isotope.pkgd.js"></script>
- <!--<script src="splitter.js"></script> -->
+ <script src="splitter.js"></script>
  <script src="emojificate.js"></script> 
+ <script src="infinity.js"></script>
   <!-- get rid of this later for deployment -->
   <link rel="stylesheet" type="text/css" href="style.css" media="screen">
+
 </head>
 <body>
 
@@ -21,6 +24,12 @@
 
 $( document ).ready( function() {
 
+  document.getElementById('outputBox').readOnly = true;
+
+$("#MySplitter").splitter;
+$().splitter({splitbarKey: "I"})
+
+$("#MySplitter").trigger("resize", [ 200 ]);
   // init Isotope
   var $container = $('.isotope').isotope({
     itemSelector: '.element-item',
@@ -33,13 +42,11 @@ $( document ).ready( function() {
       unicode: function( itemElem ) {
         var unicode = $( itemElem ).find('.unicode').text();
         return parseFloat( unicode.replace( /[\(\)]/g, '') );
+
+
       }
     }
   });
-
-   $().ready(function(){
-  //$("#MySplitter").splitter;
- });
 
   // filter functions
   var filterFns = {
@@ -68,7 +75,17 @@ $( document ).ready( function() {
     var sortByValue = $(this).attr('data-sort-by');
     $container.isotope({ sortBy: sortByValue });
   });
-  
+
+  $('#lists').on( 'click', 'button', function() {
+   //var emoji = $(this).children("p").attr("emoji").html();
+   //console.log(this)
+  });
+
+
+   $("button").click(function() {
+    
+    var emoji = ($(this).children("p").attr('id')); //THIS IS WHERE I INSERT INTO 
+});
   // change is-checked class on buttons
   $('.button-group').each( function( i, buttonGroup ) {
     var $buttonGroup = $( buttonGroup );
@@ -79,10 +96,14 @@ $( document ).ready( function() {
   });
   
 });
+
+
 </script>
 
 <div id="topBar">
 </div>
+
+
 <div id="MySplitter">
 
 <div id="LeftPane">
@@ -97,132 +118,4447 @@ $( document ).ready( function() {
 </script>
 
 <div id="output">
+<input type="text" name="outputBox" id="outputBox">
 </div>
 
 </div>
 
 <div id="RightPane">
-  <div id="list">
 
-<h1>Emoji Sorting</h1>
+<div id="searchMenu">
 <h2>Filter</h2>
 <div id="filters" class="button-group">  <button class="button is-checked" data-filter="*">show all</button>
-  <button class="button" data-filter=".metal">metal</button>
-  <button class="button" data-filter=".transition">transition</button>
-  <button class="button" data-filter=".alkali, .alkaline-earth">alkali and alkaline-earth</button>
-  <button class="button" data-filter=":not(.transition)">not transition</button>
-  <button class="button" data-filter=".metal:not(.transition)">metal but not transition</button>
-  <button class="button" data-filter="unicodeGreaterThan50">unicode > 50</button>
-  <button class="button" data-filter="ium">short-name ends with &ndash;ium</button>
+  <button class="button" data-filter=".reserved">reserved</button>
+  <button class="button" data-filter=".free">free</button>
 </div>
 
 <h2>Sort</h2>
 <div id="sorts" class="button-group">  <button class="button is-checked" data-sort-by="original-order">original order</button>
-  <button class="button" data-sort-by="short-name">short-name</button>
+  <button class="button" data-soid="utton>
   <button class="button" data-sort-by="emoji">emoji</button>
   <button class="button" data-sort-by="unicode">unicode</button>
   <button class="button" data-sort-by="category">category</button>
 </div>
 
-<div class="isotope">
-  <button class="element-item transition metal " data-category="transition">
-    <h3 class="short-name">:bomb:</h3>
-    <p class="emoji">💣</p>
-    <p class="unicode">80</p>
-  </button>
-  <button class="element-item metalloid " data-category="metalloid">
-    <h3 class="short-name">Tellurium</h3>
-    <p class="emoji">Te</p>
-    <p class="unicode">52</p>
-  </button>
-  <button class="element-item post-transition metal " data-category="post-transition">
-    <h3 class="short-name">Bismuth</h3>
-    <p class="emoji">Bi</p>
-    <p class="unicode">83</p>
-  </button>
-  <button class="element-item post-transition metal " data-category="post-transition">
-    <h3 class="short-name">Lead</h3>
-    <p class="emoji">Pb</p>
-    <p class="unicode">82</p>
-  </button>
-  <button class="element-item transition metal " data-category="transition">
-    <h3 class="short-name">Gold</h3>
-    <p class="emoji">Au</p>
-    <p class="unicode">79</p>
-  </button>
-  <button class="element-item alkali metal " data-category="alkali">
-    <h3 class="short-name">Potassium</h3>
-    <p class="emoji">K</p>
-    <p class="unicode">19</p>
-  </button>
-  <button class="element-item alkali metal " data-category="alkali">
-    <h3 class="short-name">Sodium</h3>
-    <p class="emoji">Na</p>
-    <p class="unicode">11</p>
-  </button>
-  <button class="element-item transition metal " data-category="transition">
-    <h3 class="short-name">Cadmium</h3>
-    <p class="emoji">Cd</p>
-    <p class="unicode">48</p>
-  </button>
-  <button class="element-item alkaline-earth metal " data-category="alkaline-earth">
-    <h3 class="short-name">Calcium</h3>
-    <p class="emoji">Ca</p>
-    <p class="unicode">20</p>
-  </button>
-  <button class="element-item transition metal " data-category="transition">
-    <h3 class="short-name">Rhenium</h3>
-    <p class="emoji">Re</p>
-    <p class="unicode">75</p>
-  </button>
-  <button class="element-item post-transition metal " data-category="post-transition">
-    <h3 class="short-name">Thallium</h3>
-    <p class="emoji">Tl</p>
-    <p class="unicode">81</p>
-  </button>
-  <button class="element-item metalloid " data-category="metalloid">
-    <h3 class="short-name">Antimony</h3>
-    <p class="emoji">Sb</p>
-    <p class="unicode">51</p>
-  </button>
-  <button class="element-item transition metal " data-category="transition">
-    <h3 class="short-name">Cobalt</h3>
-    <p class="emoji">Co</p>
-    <p class="unicode">27</p>
-  </button>
-  <button class="element-item lanthanoid metal inner-transition " data-category="lanthanoid">
-    <h3 class="short-name">Ytterbium</h3>
-    <p class="emoji">Yb</p>
-    <p class="unicode">70</p>
-  </button>
-  <button class="element-item noble-gas nonmetal " data-category="noble-gas">
-    <h3 class="short-name">Argon</h3>
-    <p class="emoji">Ar</p>
-    <p class="unicode">18</p>
-  </button>
-  <button class="element-item diatomic nonmetal " data-category="diatomic">
-    <h3 class="short-name">Nitrogen</h3>
-    <p class="emoji">N</p>
-    <p class="unicode">7</p>
-  </button>
-  <button class="element-item actinoid metal inner-transition " data-category="actinoid">
-    <h3 class="short-name">Uranium</h3>
-    <p class="emoji">U</p>
-    <p class="unicode">92</p>
-  </button>
-  <button class="element-item actinoid metal inner-transition " data-category="actinoid">
-    <h3 class="short-name">Plutonium</h3>
-    <p class="emoji">Pu</p>
-    <p class="unicode">94</p>
-  </button>
-    <button class="element-item transition metal " data-category="transition">
-    <h3 class="short-name">:bomb:</h3>
-    <p class="emoji">💣</p>
-    <p class="unicode">80</p>
-  </button>
-  
 </div>
+  <div id="list">
 
+<div id="lists" class="isotope">
+  <button class="element-item reserved " data-category="reserved">
+    <p id="bomb"> 💣</p>
+    <p class="unicode">80</p>
+  </button>
+  <button class="element-item free" data-category="CATERGORY">
+<p id="aerial tramway"></p>
+<p class="unicode">1F6A1</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="airplane">✈</p>
+<p class="unicode">2708</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="alarm clock">⏰</p>
+<p class="unicode">23F0</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="alien monster"></p>
+<p class="unicode">1F47E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="ambulance"></p>
+<p class="unicode">1F691</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="american football"></p>
+<p class="unicode">1F3C8</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="anchor">⚓</p>
+<p class="unicode">2693</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="anger symbol"></p>
+<p class="unicode">1F4A2</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="angry face"></p>
+<p class="unicode">1F620</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="anguished face"></p>
+<p class="unicode">1F627</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="ant"></p>
+<p class="unicode">1F41C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="antenna with bars"></p>
+<p class="unicode">1F4F6</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="anticlockwise downwards and upwards open circle arrows"></p>
+<p class="unicode">1F504</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="aquarius">♒</p>
+<p class="unicode">2652</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="aries">♈</p>
+<p class="unicode">2648</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="arrow pointing rightwards then curving downwards">⤵</p>
+<p class="unicode">2935</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="arrow pointing rightwards then curving upwards">⤴</p>
+<p class="unicode">2934</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="articulated lorry"></p>
+<p class="unicode">1F69B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="artist palette"></p>
+<p class="unicode">1F3A8</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="astonished face"></p>
+<p class="unicode">1F632</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="athletic shoe"></p>
+<p class="unicode">1F45F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="aubergine"></p>
+<p class="unicode">1F346</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="automated teller machine"></p>
+<p class="unicode">1F3E7</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="automobile"></p>
+<p class="unicode">1F697</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="baby"></p>
+<p class="unicode">1F476</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="baby angel"></p>
+<p class="unicode">1F47C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="baby bottle"></p>
+<p class="unicode">1F37C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="baby chick"></p>
+<p class="unicode">1F424</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="baby symbol"></p>
+<p class="unicode">1F6BC</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="back with leftwards arrow above"></p>
+<p class="unicode">1F519</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="bactrian camel"></p>
+<p class="unicode">1F42B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="baggage claim"></p>
+<p class="unicode">1F6C4</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="balloon"></p>
+<p class="unicode">1F388</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="ballot box with check">☑</p>
+<p class="unicode">2611</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="banana"></p>
+<p class="unicode">1F34C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="bank"></p>
+<p class="unicode">1F3E6</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="banknote with dollar sign"></p>
+<p class="unicode">1F4B5</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="banknote with euro sign"></p>
+<p class="unicode">1F4B6</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="banknote with pound sign"></p>
+<p class="unicode">1F4B7</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="banknote with yen sign"></p>
+<p class="unicode">1F4B4</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="bar chart"></p>
+<p class="unicode">1F4CA</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="barber pole"></p>
+<p class="unicode">1F488</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="baseball">⚾</p>
+<p class="unicode">26BE</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="basketball and hoop"></p>
+<p class="unicode">1F3C0</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="bath"></p>
+<p class="unicode">1F6C0</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="bathtub"></p>
+<p class="unicode">1F6C1</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="battery"></p>
+<p class="unicode">1F50B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="bear face"></p>
+<p class="unicode">1F43B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="beating heart"></p>
+<p class="unicode">1F493</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="beer mug"></p>
+<p class="unicode">1F37A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="bell"></p>
+<p class="unicode">1F514</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="bell with cancellation stroke"></p>
+<p class="unicode">1F515</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="bento box"></p>
+<p class="unicode">1F371</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="bicycle"></p>
+<p class="unicode">1F6B2</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="bicyclist"></p>
+<p class="unicode">1F6B4</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="bikini"></p>
+<p class="unicode">1F459</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="billiards"></p>
+<p class="unicode">1F3B1</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="bird"></p>
+<p class="unicode">1F426</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="birthday cake"></p>
+<p class="unicode">1F382</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="black club suit">♣</p>
+<p class="unicode">2663</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="black diamond suit">♦</p>
+<p class="unicode">2666</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="black down-pointing double triangle">⏬</p>
+<p class="unicode">23EC</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="black heart suit">♥</p>
+<p class="unicode">2665</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="black large square">⬛</p>
+<p class="unicode">2B1B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="black left-pointing double triangle">⏪</p>
+<p class="unicode">23EA</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="black left-pointing triangle">◀</p>
+<p class="unicode">25C0</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="black medium small square">◾</p>
+<p class="unicode">25FE</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="black medium square">◼</p>
+<p class="unicode">25FC</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="black nib">✒</p>
+<p class="unicode">2712</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="black question mark ornament">❓</p>
+<p class="unicode">2753</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="black right-pointing double triangle">⏩</p>
+<p class="unicode">23E9</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="black right-pointing triangle">▶</p>
+<p class="unicode">25B6</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="black rightwards arrow">➡</p>
+<p class="unicode">27A1</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="black scissors">✂</p>
+<p class="unicode">2702</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="black small square">▪</p>
+<p class="unicode">25AA</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="black spade suit">♠</p>
+<p class="unicode">2660</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="black square button"></p>
+<p class="unicode">1F532</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="black sun with rays">☀</p>
+<p class="unicode">2600</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="black telephone">☎</p>
+<p class="unicode">260E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="black universal recycling symbol">♻</p>
+<p class="unicode">267B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="black up-pointing double triangle">⏫</p>
+<p class="unicode">23EB</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="blossom"></p>
+<p class="unicode">1F33C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="blowfish"></p>
+<p class="unicode">1F421</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="blue book"></p>
+<p class="unicode">1F4D8</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="blue heart"></p>
+<p class="unicode">1F499</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="boar"></p>
+<p class="unicode">1F417</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="bomb"></p>
+<p class="unicode">1F4A3</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="bookmark"></p>
+<p class="unicode">1F516</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="bookmark tabs"></p>
+<p class="unicode">1F4D1</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="books"></p>
+<p class="unicode">1F4DA</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="bouquet"></p>
+<p class="unicode">1F490</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="bowling"></p>
+<p class="unicode">1F3B3</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="boy"></p>
+<p class="unicode">1F466</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="bread"></p>
+<p class="unicode">1F35E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="bride with veil"></p>
+<p class="unicode">1F470</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="bridge at night"></p>
+<p class="unicode">1F309</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="briefcase"></p>
+<p class="unicode">1F4BC</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="broken heart"></p>
+<p class="unicode">1F494</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="bug"></p>
+<p class="unicode">1F41B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="bus"></p>
+<p class="unicode">1F68C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="bus stop"></p>
+<p class="unicode">1F68F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="bust in silhouette"></p>
+<p class="unicode">1F464</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="busts in silhouette"></p>
+<p class="unicode">1F465</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="cactus"></p>
+<p class="unicode">1F335</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="calendar"></p>
+<p class="unicode">1F4C5</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="camera"></p>
+<p class="unicode">1F4F7</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="cancer">♋</p>
+<p class="unicode">264B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="candy"></p>
+<p class="unicode">1F36C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="capricorn">♑</p>
+<p class="unicode">2651</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="card index"></p>
+<p class="unicode">1F4C7</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="carousel horse"></p>
+<p class="unicode">1F3A0</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="carp streamer"></p>
+<p class="unicode">1F38F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="cat"></p>
+<p class="unicode">1F408</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="cat face"></p>
+<p class="unicode">1F431</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="cat face with tears of joy"></p>
+<p class="unicode">1F639</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="cat face with wry smile"></p>
+<p class="unicode">1F63C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="chart with downwards trend"></p>
+<p class="unicode">1F4C9</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="chart with upwards trend"></p>
+<p class="unicode">1F4C8</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="chart with upwards trend and yen sign"></p>
+<p class="unicode">1F4B9</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="cheering megaphone"></p>
+<p class="unicode">1F4E3</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="chequered flag"></p>
+<p class="unicode">1F3C1</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="cherries"></p>
+<p class="unicode">1F352</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="cherry blossom"></p>
+<p class="unicode">1F338</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="chestnut"></p>
+<p class="unicode">1F330</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="chicken"></p>
+<p class="unicode">1F414</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="children crossing"></p>
+<p class="unicode">1F6B8</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="chocolate bar"></p>
+<p class="unicode">1F36B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="christmas tree"></p>
+<p class="unicode">1F384</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="church">⛪</p>
+<p class="unicode">26EA</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="cinema"></p>
+<p class="unicode">1F3A6</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="circled ideograph accept"></p>
+<p class="unicode">1F251</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="circled ideograph advantage"></p>
+<p class="unicode">1F250</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="circled ideograph congratulation">㊗</p>
+<p class="unicode">3297</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="circled ideograph secret">㊙</p>
+<p class="unicode">3299</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="circled latin capital letter m">Ⓜ</p>
+<p class="unicode">24C2</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="circus tent"></p>
+<p class="unicode">1F3AA</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="cityscape at dusk"></p>
+<p class="unicode">1F306</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clapper board"></p>
+<p class="unicode">1F3AC</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clapping hands sign"></p>
+<p class="unicode">1F44F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clinking beer mugs"></p>
+<p class="unicode">1F37B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clipboard"></p>
+<p class="unicode">1F4CB</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clock face eight oclock"></p>
+<p class="unicode">1F557</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clock face eight-thirty"></p>
+<p class="unicode">1F563</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clock face eleven oclock"></p>
+<p class="unicode">1F55A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clock face eleven-thirty"></p>
+<p class="unicode">1F566</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clock face five oclock"></p>
+<p class="unicode">1F554</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clock face five-thirty"></p>
+<p class="unicode">1F560</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clock face four oclock"></p>
+<p class="unicode">1F553</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clock face four-thirty"></p>
+<p class="unicode">1F55F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clock face nine oclock"></p>
+<p class="unicode">1F558</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clock face nine-thirty"></p>
+<p class="unicode">1F564</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clock face one oclock"></p>
+<p class="unicode">1F550</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clock face one-thirty"></p>
+<p class="unicode">1F55C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clock face seven oclock"></p>
+<p class="unicode">1F556</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clock face seven-thirty"></p>
+<p class="unicode">1F562</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clock face six oclock"></p>
+<p class="unicode">1F555</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clock face six-thirty"></p>
+<p class="unicode">1F561</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clock face ten oclock"></p>
+<p class="unicode">1F559</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clock face ten-thirty"></p>
+<p class="unicode">1F565</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clock face three oclock"></p>
+<p class="unicode">1F552</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clock face three-thirty"></p>
+<p class="unicode">1F55E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clock face twelve oclock"></p>
+<p class="unicode">1F55B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clock face twelve-thirty"></p>
+<p class="unicode">1F567</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clock face two oclock"></p>
+<p class="unicode">1F551</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clock face two-thirty"></p>
+<p class="unicode">1F55D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clockwise downwards and upwards open circle arrows"></p>
+<p class="unicode">1F503</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clockwise rightwards and leftwards open circle arrows"></p>
+<p class="unicode">1F501</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="clockwise rightwards and leftwards open circle arrows with circled one overlay"></p>
+<p class="unicode">1F502</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="closed book"></p>
+<p class="unicode">1F4D5</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="closed lock with key"></p>
+<p class="unicode">1F510</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="closed mailbox with lowered flag"></p>
+<p class="unicode">1F4EA</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="closed mailbox with raised flag"></p>
+<p class="unicode">1F4EB</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="closed umbrella"></p>
+<p class="unicode">1F302</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="cloud">☁</p>
+<p class="unicode">2601</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="cocktail glass"></p>
+<p class="unicode">1F378</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="collision symbol"></p>
+<p class="unicode">1F4A5</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="confetti ball"></p>
+<p class="unicode">1F38A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="confounded face"></p>
+<p class="unicode">1F616</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="confused face"></p>
+<p class="unicode">1F615</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="construction sign"></p>
+<p class="unicode">1F6A7</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="construction worker"></p>
+<p class="unicode">1F477</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="convenience store"></p>
+<p class="unicode">1F3EA</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="cooked rice"></p>
+<p class="unicode">1F35A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="cookie"></p>
+<p class="unicode">1F36A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="cooking"></p>
+<p class="unicode">1F373</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="copyright sign">©</p>
+<p class="unicode">00A9</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="couple with heart"></p>
+<p class="unicode">1F491</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="cow"></p>
+<p class="unicode">1F404</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="cow face"></p>
+<p class="unicode">1F42E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="credit card"></p>
+<p class="unicode">1F4B3</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="crescent moon"></p>
+<p class="unicode">1F319</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="crocodile"></p>
+<p class="unicode">1F40A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="cross mark">❌</p>
+<p class="unicode">274C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="crossed flags"></p>
+<p class="unicode">1F38C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="crown"></p>
+<p class="unicode">1F451</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="crying cat face"></p>
+<p class="unicode">1F63F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="crying face"></p>
+<p class="unicode">1F622</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="crystal ball"></p>
+<p class="unicode">1F52E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="curly loop">➰</p>
+<p class="unicode">27B0</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="currency exchange"></p>
+<p class="unicode">1F4B1</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="curry and rice"></p>
+<p class="unicode">1F35B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="custard"></p>
+<p class="unicode">1F36E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="customs"></p>
+<p class="unicode">1F6C3</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="cyclone"></p>
+<p class="unicode">1F300</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="dancer"></p>
+<p class="unicode">1F483</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="dango"></p>
+<p class="unicode">1F361</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="dash symbol"></p>
+<p class="unicode">1F4A8</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="deciduous tree"></p>
+<p class="unicode">1F333</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="delivery truck"></p>
+<p class="unicode">1F69A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="department store"></p>
+<p class="unicode">1F3EC</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="diamond shape with a dot inside"></p>
+<p class="unicode">1F4A0</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="direct hit"></p>
+<p class="unicode">1F3AF</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="disappointed but relieved face"></p>
+<p class="unicode">1F625</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="disappointed face"></p>
+<p class="unicode">1F61E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="dizzy face"></p>
+<p class="unicode">1F635</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="dizzy symbol"></p>
+<p class="unicode">1F4AB</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="do not litter symbol"></p>
+<p class="unicode">1F6AF</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="dog"></p>
+<p class="unicode">1F415</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="dog face"></p>
+<p class="unicode">1F436</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="dolphin"></p>
+<p class="unicode">1F42C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="door"></p>
+<p class="unicode">1F6AA</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="double curly loop">➿</p>
+<p class="unicode">27BF</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="double exclamation mark">‼</p>
+<p class="unicode">203C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="doughnut"></p>
+<p class="unicode">1F369</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="down-pointing red triangle"></p>
+<p class="unicode">1F53B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="down-pointing small red triangle"></p>
+<p class="unicode">1F53D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="downwards black arrow">⬇</p>
+<p class="unicode">2B07</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="dragon"></p>
+<p class="unicode">1F409</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="dragon face"></p>
+<p class="unicode">1F432</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="dress"></p>
+<p class="unicode">1F457</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="dromedary camel"></p>
+<p class="unicode">1F42A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="droplet"></p>
+<p class="unicode">1F4A7</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="dvd"></p>
+<p class="unicode">1F4C0</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="e-mail symbol"></p>
+<p class="unicode">1F4E7</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="ear"></p>
+<p class="unicode">1F442</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="ear of maize"></p>
+<p class="unicode">1F33D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="ear of rice"></p>
+<p class="unicode">1F33E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="earth globe americas"></p>
+<p class="unicode">1F30E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="earth globe asia-australia"></p>
+<p class="unicode">1F30F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="earth globe europe-africa"></p>
+<p class="unicode">1F30D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="eight pointed black star">✴</p>
+<p class="unicode">2734</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="eight spoked asterisk">✳</p>
+<p class="unicode">2733</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="electric light bulb"></p>
+<p class="unicode">1F4A1</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="electric plug"></p>
+<p class="unicode">1F50C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="electric torch"></p>
+<p class="unicode">1F526</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="elephant"></p>
+<p class="unicode">1F418</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="emoji modifier fitzpatrick type-1-2"></p>
+<p class="unicode">1F3FB</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="emoji modifier fitzpatrick type-3"></p>
+<p class="unicode">1F3FC</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="emoji modifier fitzpatrick type-4"></p>
+<p class="unicode">1F3FD</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="emoji modifier fitzpatrick type-5"></p>
+<p class="unicode">1F3FE</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="emoji modifier fitzpatrick type-6"></p>
+<p class="unicode">1F3FF</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="end with leftwards arrow above"></p>
+<p class="unicode">1F51A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="envelope">✉</p>
+<p class="unicode">2709</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="envelope with downwards arrow above"></p>
+<p class="unicode">1F4E9</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="european castle"></p>
+<p class="unicode">1F3F0</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="european post office"></p>
+<p class="unicode">1F3E4</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="evergreen tree"></p>
+<p class="unicode">1F332</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="exclamation question mark">⁉</p>
+<p class="unicode">2049</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="expressionless face"></p>
+<p class="unicode">1F611</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="extraterrestrial alien"></p>
+<p class="unicode">1F47D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="eyeglasses"></p>
+<p class="unicode">1F453</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="eyes"></p>
+<p class="unicode">1F440</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="face massage"></p>
+<p class="unicode">1F486</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="face savouring delicious food"></p>
+<p class="unicode">1F60B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="face screaming in fear"></p>
+<p class="unicode">1F631</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="face throwing a kiss"></p>
+<p class="unicode">1F618</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="face with cold sweat"></p>
+<p class="unicode">1F613</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="face with look of triumph"></p>
+<p class="unicode">1F624</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="face with medical mask"></p>
+<p class="unicode">1F637</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="face with no good gesture"></p>
+<p class="unicode">1F645</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="face with ok gesture"></p>
+<p class="unicode">1F646</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="face with open mouth"></p>
+<p class="unicode">1F62E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="face with open mouth and cold sweat"></p>
+<p class="unicode">1F630</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="face with stuck-out tongue"></p>
+<p class="unicode">1F61B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="face with stuck-out tongue and tightly-closed eyes"></p>
+<p class="unicode">1F61D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="face with stuck-out tongue and winking eye"></p>
+<p class="unicode">1F61C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="face with tears of joy"></p>
+<p class="unicode">1F602</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="face without mouth"></p>
+<p class="unicode">1F636</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="factory"></p>
+<p class="unicode">1F3ED</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="fallen leaf"></p>
+<p class="unicode">1F342</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="family"></p>
+<p class="unicode">1F46A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="father christmas"></p>
+<p class="unicode">1F385</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="fax machine"></p>
+<p class="unicode">1F4E0</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="fearful face"></p>
+<p class="unicode">1F628</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="ferris wheel"></p>
+<p class="unicode">1F3A1</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="file folder"></p>
+<p class="unicode">1F4C1</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="fire"></p>
+<p class="unicode">1F525</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="fire engine"></p>
+<p class="unicode">1F692</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="firework sparkler"></p>
+<p class="unicode">1F387</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="fireworks"></p>
+<p class="unicode">1F386</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="first quarter moon symbol"></p>
+<p class="unicode">1F313</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="first quarter moon with face"></p>
+<p class="unicode">1F31B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="fish"></p>
+<p class="unicode">1F41F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="fish cake with swirl design"></p>
+<p class="unicode">1F365</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="fishing pole and fish"></p>
+<p class="unicode">1F3A3</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="fisted hand sign"></p>
+<p class="unicode">1F44A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="flag in hole">⛳</p>
+<p class="unicode">26F3</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="flexed biceps"></p>
+<p class="unicode">1F4AA</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="floppy disk"></p>
+<p class="unicode">1F4BE</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="flower playing cards"></p>
+<p class="unicode">1F3B4</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="flushed face"></p>
+<p class="unicode">1F633</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="foggy"></p>
+<p class="unicode">1F301</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="footprints"></p>
+<p class="unicode">1F463</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="fork and knife"></p>
+<p class="unicode">1F374</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="fountain">⛲</p>
+<p class="unicode">26F2</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="four leaf clover"></p>
+<p class="unicode">1F340</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="french fries"></p>
+<p class="unicode">1F35F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="fried shrimp"></p>
+<p class="unicode">1F364</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="frog face"></p>
+<p class="unicode">1F438</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="front-facing baby chick"></p>
+<p class="unicode">1F425</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="frowning face with open mouth"></p>
+<p class="unicode">1F626</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="fuel pump">⛽</p>
+<p class="unicode">26FD</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="full moon symbol"></p>
+<p class="unicode">1F315</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="full moon with face"></p>
+<p class="unicode">1F31D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="game die"></p>
+<p class="unicode">1F3B2</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="gem stone"></p>
+<p class="unicode">1F48E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="gemini">♊</p>
+<p class="unicode">264A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="ghost"></p>
+<p class="unicode">1F47B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="girl"></p>
+<p class="unicode">1F467</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="globe with meridians"></p>
+<p class="unicode">1F310</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="glowing star"></p>
+<p class="unicode">1F31F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="goat"></p>
+<p class="unicode">1F410</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="graduation cap"></p>
+<p class="unicode">1F393</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="grapes"></p>
+<p class="unicode">1F347</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="green apple"></p>
+<p class="unicode">1F34F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="green book"></p>
+<p class="unicode">1F4D7</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="green heart"></p>
+<p class="unicode">1F49A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="grimacing face"></p>
+<p class="unicode">1F62C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="grinning cat face with smiling eyes"></p>
+<p class="unicode">1F638</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="grinning face"></p>
+<p class="unicode">1F600</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="grinning face with smiling eyes"></p>
+<p class="unicode">1F601</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="growing heart"></p>
+<p class="unicode">1F497</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="guardsman"></p>
+<p class="unicode">1F482</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="guitar"></p>
+<p class="unicode">1F3B8</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="haircut"></p>
+<p class="unicode">1F487</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="hamburger"></p>
+<p class="unicode">1F354</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="hammer"></p>
+<p class="unicode">1F528</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="hamster face"></p>
+<p class="unicode">1F439</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="handbag"></p>
+<p class="unicode">1F45C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="happy person raising one hand"></p>
+<p class="unicode">1F64B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="hash key">#</p>
+<p class="unicode">0023-</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="20E3hatching chick"></p>
+<p class="unicode">1F423</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="headphone"></p>
+<p class="unicode">1F3A7</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="hear-no-evil monkey"></p>
+<p class="unicode">1F649</p> 
+ </button>
+  </div>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="heart decoration"></p>
+<p class="unicode">1F49F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="heart with arrow"></p>
+<p class="unicode">1F498</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="heart with ribbon"></p>
+<p class="unicode">1F49D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="heavy black heart">❤</p>
+<p class="unicode">2764</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="heavy check mark">✔</p>
+<p class="unicode">2714</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="heavy division sign">➗</p>
+<p class="unicode">2797</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="heavy dollar sign"></p>
+<p class="unicode">1F4B2</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="heavy exclamation mark symbol">❗</p>
+<p class="unicode">2757</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="heavy large circle">⭕</p>
+<p class="unicode">2B55</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="heavy minus sign">➖</p>
+<p class="unicode">2796</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="heavy multiplication x">✖</p>
+<p class="unicode">2716</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="heavy plus sign">➕</p>
+<p class="unicode">2795</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="helicopter"></p>
+<p class="unicode">1F681</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="herb"></p>
+<p class="unicode">1F33F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="hibiscus"></p>
+<p class="unicode">1F33A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="high brightness symbol"></p>
+<p class="unicode">1F506</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="high voltage sign">⚡</p>
+<p class="unicode">26A1</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="high-heeled shoe"></p>
+<p class="unicode">1F460</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="high-speed train"></p>
+<p class="unicode">1F684</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="high-speed train with bullet nose"></p>
+<p class="unicode">1F685</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="hocho"></p>
+<p class="unicode">1F52A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="honey pot"></p>
+<p class="unicode">1F36F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="honeybee"></p>
+<p class="unicode">1F41D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="horizontal traffic light"></p>
+<p class="unicode">1F6A5</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="horse"></p>
+<p class="unicode">1F40E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="horse face"></p>
+<p class="unicode">1F434</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="horse racing"></p>
+<p class="unicode">1F3C7</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="hospital"></p>
+<p class="unicode">1F3E5</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="hot beverage">☕</p>
+<p class="unicode">2615</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="hot springs">♨</p>
+<p class="unicode">2668</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="hotel"></p>
+<p class="unicode">1F3E8</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="hourglass">⌛</p>
+<p class="unicode">231B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="hourglass with flowing sand">⏳</p>
+<p class="unicode">23F3</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="house building"></p>
+<p class="unicode">1F3E0</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="house with garden"></p>
+<p class="unicode">1F3E1</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="hundred points symbol"></p>
+<p class="unicode">1F4AF</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="hushed face"></p>
+<p class="unicode">1F62F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="ice cream"></p>
+<p class="unicode">1F368</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="imp"></p>
+<p class="unicode">1F47F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="inbox tray"></p>
+<p class="unicode">1F4E5</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="incoming envelope"></p>
+<p class="unicode">1F4E8</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="information desk person"></p>
+<p class="unicode">1F481</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="information source">ℹ</p>
+<p class="unicode">2139</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="input symbol for latin capital letters"></p>
+<p class="unicode">1F520</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="input symbol for latin letters"></p>
+<p class="unicode">1F524</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="input symbol for latin small letters"></p>
+<p class="unicode">1F521</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="input symbol for numbers"></p>
+<p class="unicode">1F522</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="input symbol for symbols"></p>
+<p class="unicode">1F523</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="izakaya lantern"></p>
+<p class="unicode">1F3EE</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="jack-o-lantern"></p>
+<p class="unicode">1F383</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="japanese castle"></p>
+<p class="unicode">1F3EF</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="japanese dolls"></p>
+<p class="unicode">1F38E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="japanese goblin"></p>
+<p class="unicode">1F47A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="japanese ogre"></p>
+<p class="unicode">1F479</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="japanese post office"></p>
+<p class="unicode">1F3E3</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="japanese symbol for beginner"></p>
+<p class="unicode">1F530</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="jeans"></p>
+<p class="unicode">1F456</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="key"></p>
+<p class="unicode">1F511</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="keycap 0">0</p>
+<p class="unicode">0030-</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="20E3keycap 1">1</p>
+<p class="unicode">0031-</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="20E3keycap 2">2</p>
+<p class="unicode">0032-</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="20E3keycap 3">3</p>
+<p class="unicode">0033-</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="20E3keycap 4">4</p>
+<p class="unicode">0034-</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="20E3keycap 5">5</p>
+<p class="unicode">0035-</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="20E3keycap 6">6</p>
+<p class="unicode">0036-</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="20E3keycap 7">7</p>
+<p class="unicode">0037-</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="20E3keycap 8">8</p>
+<p class="unicode">0038-</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="20E3keycap 9">9</p>
+<p class="unicode">0039-</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="20E3keycap ten"></p>
+<p class="unicode">1F51F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="kimono"></p>
+<p class="unicode">1F458</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="kiss"></p>
+<p class="unicode">1F48F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="kiss mark"></p>
+<p class="unicode">1F48B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="kissing cat face with closed eyes"></p>
+<p class="unicode">1F63D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="kissing face"></p>
+<p class="unicode">1F617</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="kissing face with closed eyes"></p>
+<p class="unicode">1F61A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="kissing face with smiling eyes"></p>
+<p class="unicode">1F619</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="koala"></p>
+<p class="unicode">1F428</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="lady beetle"></p>
+<p class="unicode">1F41E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="large blue circle"></p>
+<p class="unicode">1F535</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="large blue diamond"></p>
+<p class="unicode">1F537</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="large orange diamond"></p>
+<p class="unicode">1F536</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="large red circle"></p>
+<p class="unicode">1F534</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="last quarter moon symbol"></p>
+<p class="unicode">1F317</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="last quarter moon with face"></p>
+<p class="unicode">1F31C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="leaf fluttering in wind"></p>
+<p class="unicode">1F343</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="ledger"></p>
+<p class="unicode">1F4D2</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="left luggage"></p>
+<p class="unicode">1F6C5</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="left right arrow">↔</p>
+<p class="unicode">2194</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="left-pointing magnifying glass"></p>
+<p class="unicode">1F50D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="leftwards arrow with hook">↩</p>
+<p class="unicode">21A9</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="leftwards black arrow">⬅</p>
+<p class="unicode">2B05</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="lemon"></p>
+<p class="unicode">1F34B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="leo">♌</p>
+<p class="unicode">264C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="leopard"></p>
+<p class="unicode">1F406</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="libra">♎</p>
+<p class="unicode">264E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="light rail"></p>
+<p class="unicode">1F688</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="link symbol"></p>
+<p class="unicode">1F517</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="lipstick"></p>
+<p class="unicode">1F484</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="lock"></p>
+<p class="unicode">1F512</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="lock with ink pen"></p>
+<p class="unicode">1F50F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="lollipop"></p>
+<p class="unicode">1F36D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="loudly crying face"></p>
+<p class="unicode">1F62D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="love hotel"></p>
+<p class="unicode">1F3E9</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="love letter"></p>
+<p class="unicode">1F48C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="low brightness symbol"></p>
+<p class="unicode">1F505</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="mahjong tile red dragon"></p>
+<p class="unicode">1F004</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="man"></p>
+<p class="unicode">1F468</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="man and woman holding hands"></p>
+<p class="unicode">1F46B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="man with gua pi mao"></p>
+<p class="unicode">1F472</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="man with turban"></p>
+<p class="unicode">1F473</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="mans shoe"></p>
+<p class="unicode">1F45E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="maple leaf"></p>
+<p class="unicode">1F341</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="meat on bone"></p>
+<p class="unicode">1F356</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="medium black circle">⚫</p>
+<p class="unicode">26AB</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="medium white circle">⚪</p>
+<p class="unicode">26AA</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="melon"></p>
+<p class="unicode">1F348</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="memo"></p>
+<p class="unicode">1F4DD</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="mens symbol"></p>
+<p class="unicode">1F6B9</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="metro"></p>
+<p class="unicode">1F687</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="microphone"></p>
+<p class="unicode">1F3A4</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="microscope"></p>
+<p class="unicode">1F52C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="milky way"></p>
+<p class="unicode">1F30C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="minibus"></p>
+<p class="unicode">1F690</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="minidisc"></p>
+<p class="unicode">1F4BD</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="mobile phone"></p>
+<p class="unicode">1F4F1</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="mobile phone off"></p>
+<p class="unicode">1F4F4</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="mobile phone with rightwards arrow at left"></p>
+<p class="unicode">1F4F2</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="money bag"></p>
+<p class="unicode">1F4B0</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="money with wings"></p>
+<p class="unicode">1F4B8</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="monkey"></p>
+<p class="unicode">1F412</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="monkey face"></p>
+<p class="unicode">1F435</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="monorail"></p>
+<p class="unicode">1F69D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="moon viewing ceremony"></p>
+<p class="unicode">1F391</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="mount fuji"></p>
+<p class="unicode">1F5FB</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="mountain bicyclist"></p>
+<p class="unicode">1F6B5</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="mountain cableway"></p>
+<p class="unicode">1F6A0</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="mountain railway"></p>
+<p class="unicode">1F69E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="mouse"></p>
+<p class="unicode">1F401</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="mouse face"></p>
+<p class="unicode">1F42D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="mouth"></p>
+<p class="unicode">1F444</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="movie camera"></p>
+<p class="unicode">1F3A5</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="moyai"></p>
+<p class="unicode">1F5FF</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="multiple musical notes"></p>
+<p class="unicode">1F3B6</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="mushroom"></p>
+<p class="unicode">1F344</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="musical keyboard"></p>
+<p class="unicode">1F3B9</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="musical note"></p>
+<p class="unicode">1F3B5</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="musical score"></p>
+<p class="unicode">1F3BC</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="nail polish"></p>
+<p class="unicode">1F485</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="name badge"></p>
+<p class="unicode">1F4DB</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="necktie"></p>
+<p class="unicode">1F454</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="negative squared ab"></p>
+<p class="unicode">1F18E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="negative squared cross mark">❎</p>
+<p class="unicode">274E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="negative squared latin capital letter a"></p>
+<p class="unicode">1F170</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="negative squared latin capital letter b"></p>
+<p class="unicode">1F171</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="negative squared latin capital letter o"></p>
+<p class="unicode">1F17E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="negative squared latin capital letter p"></p>
+<p class="unicode">1F17F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="neutral face"></p>
+<p class="unicode">1F610</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="new moon symbol"></p>
+<p class="unicode">1F311</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="new moon with face"></p>
+<p class="unicode">1F31A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="newspaper"></p>
+<p class="unicode">1F4F0</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="night with stars"></p>
+<p class="unicode">1F303</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="no bicycles"></p>
+<p class="unicode">1F6B3</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="no entry">⛔</p>
+<p class="unicode">26D4</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="no entry sign"></p>
+<p class="unicode">1F6AB</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="no mobile phones"></p>
+<p class="unicode">1F4F5</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="no one under eighteen symbol"></p>
+<p class="unicode">1F51E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="no pedestrians"></p>
+<p class="unicode">1F6B7</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="no smoking symbol"></p>
+<p class="unicode">1F6AD</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="non-potable water symbol"></p>
+<p class="unicode">1F6B1</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="north east arrow">↗</p>
+<p class="unicode">2197</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="north west arrow">↖</p>
+<p class="unicode">2196</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="nose"></p>
+<p class="unicode">1F443</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="notebook"></p>
+<p class="unicode">1F4D3</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="notebook with decorative cover"></p>
+<p class="unicode">1F4D4</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="nut and bolt"></p>
+<p class="unicode">1F529</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="octopus"></p>
+<p class="unicode">1F419</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="oden"></p>
+<p class="unicode">1F362</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="office building"></p>
+<p class="unicode">1F3E2</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="ok hand sign"></p>
+<p class="unicode">1F44C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="older man"></p>
+<p class="unicode">1F474</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="older woman"></p>
+<p class="unicode">1F475</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="on with exclamation mark with left right arrow above"></p>
+<p class="unicode">1F51B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="oncoming automobile"></p>
+<p class="unicode">1F698</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="oncoming bus"></p>
+<p class="unicode">1F68D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="oncoming police car"></p>
+<p class="unicode">1F694</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="oncoming taxi"></p>
+<p class="unicode">1F696</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="open book"></p>
+<p class="unicode">1F4D6</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="open file folder"></p>
+<p class="unicode">1F4C2</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="open hands sign"></p>
+<p class="unicode">1F450</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="open lock"></p>
+<p class="unicode">1F513</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="open mailbox with lowered flag"></p>
+<p class="unicode">1F4ED</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="open mailbox with raised flag"></p>
+<p class="unicode">1F4EC</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="ophiuchus">⛎</p>
+<p class="unicode">26CE</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="optical disc"></p>
+<p class="unicode">1F4BF</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="orange book"></p>
+<p class="unicode">1F4D9</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="outbox tray"></p>
+<p class="unicode">1F4E4</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="ox"></p>
+<p class="unicode">1F402</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="package"></p>
+<p class="unicode">1F4E6</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="page facing up"></p>
+<p class="unicode">1F4C4</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="page with curl"></p>
+<p class="unicode">1F4C3</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="pager"></p>
+<p class="unicode">1F4DF</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="palm tree"></p>
+<p class="unicode">1F334</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="panda face"></p>
+<p class="unicode">1F43C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="paperclip"></p>
+<p class="unicode">1F4CE</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="part alternation mark">〽</p>
+<p class="unicode">303D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="party popper"></p>
+<p class="unicode">1F389</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="passport control"></p>
+<p class="unicode">1F6C2</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="paw prints"></p>
+<p class="unicode">1F43E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="peach"></p>
+<p class="unicode">1F351</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="pear"></p>
+<p class="unicode">1F350</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="pedestrian"></p>
+<p class="unicode">1F6B6</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="pencil">✏</p>
+<p class="unicode">270F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="penguin"></p>
+<p class="unicode">1F427</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="pensive face"></p>
+<p class="unicode">1F614</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="performing arts"></p>
+<p class="unicode">1F3AD</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="persevering face"></p>
+<p class="unicode">1F623</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="person bowing deeply"></p>
+<p class="unicode">1F647</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="person frowning"></p>
+<p class="unicode">1F64D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="person raising both hands in celebration"></p>
+<p class="unicode">1F64C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="person with blond hair"></p>
+<p class="unicode">1F471</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="person with folded hands"></p>
+<p class="unicode">1F64F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="person with pouting face"></p>
+<p class="unicode">1F64E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="personal computer"></p>
+<p class="unicode">1F4BB</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="pig"></p>
+<p class="unicode">1F416</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="pig face"></p>
+<p class="unicode">1F437</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="pig nose"></p>
+<p class="unicode">1F43D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="pile of poo"></p>
+<p class="unicode">1F4A9</p> 
+ </button>
+
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="pill"></p>
+<p class="unicode">1F48A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="pine decoration"></p>
+<p class="unicode">1F38D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="pineapple"></p>
+<p class="unicode">1F34D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="pisces">♓</p>
+<p class="unicode">2653</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="pistol"></p>
+<p class="unicode">1F52B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="playing card black joker"></p>
+<p class="unicode">1F0CF</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="police car"></p>
+<p class="unicode">1F693</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="police cars revolving light"></p>
+<p class="unicode">1F6A8</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="police officer"></p>
+<p class="unicode">1F46E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="poodle"></p>
+<p class="unicode">1F429</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="postal horn"></p>
+<p class="unicode">1F4EF</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="postbox"></p>
+<p class="unicode">1F4EE</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="pot of food"></p>
+<p class="unicode">1F372</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="potable water symbol"></p>
+<p class="unicode">1F6B0</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="pouch"></p>
+<p class="unicode">1F45D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="poultry leg"></p>
+<p class="unicode">1F357</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="pouting cat face"></p>
+<p class="unicode">1F63E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="pouting face"></p>
+<p class="unicode">1F621</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="princess"></p>
+<p class="unicode">1F478</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="public address loudspeaker"></p>
+<p class="unicode">1F4E2</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="purple heart"></p>
+<p class="unicode">1F49C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="purse"></p>
+<p class="unicode">1F45B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="pushpin"></p>
+<p class="unicode">1F4CC</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="put litter in its place symbol"></p>
+<p class="unicode">1F6AE</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="rabbit"></p>
+<p class="unicode">1F407</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="rabbit face"></p>
+<p class="unicode">1F430</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="radio"></p>
+<p class="unicode">1F4FB</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="radio button"></p>
+<p class="unicode">1F518</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="railway car"></p>
+<p class="unicode">1F683</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="rainbow"></p>
+<p class="unicode">1F308</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="raised fist">✊</p>
+<p class="unicode">270A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="raised hand">✋</p>
+<p class="unicode">270B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="ram"></p>
+<p class="unicode">1F40F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="rat"></p>
+<p class="unicode">1F400</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="recreational vehicle"></p>
+<p class="unicode">1F699</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="red apple"></p>
+<p class="unicode">1F34E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="regional indicator symbol letters ae"></p>
+<p class="unicode">1F1E6</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1EAregional indicator symbol letters at"></p>
+<p class="unicode">1F1E6</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1F9regional indicator symbol letters au"></p>
+<p class="unicode">1F1E6</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1FAregional indicator symbol letters be"></p>
+<p class="unicode">1F1E7</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1EAregional indicator symbol letters br"></p>
+<p class="unicode">1F1E7</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1F7regional indicator symbol letters ca"></p>
+<p class="unicode">1F1E8</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1E6regional indicator symbol letters ch"></p>
+<p class="unicode">1F1E8</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1EDregional indicator symbol letters cl"></p>
+<p class="unicode">1F1E8</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1F1regional indicator symbol letters cn"></p>
+<p class="unicode">1F1E8</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1F3regional indicator symbol letters co"></p>
+<p class="unicode">1F1E8</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1F4regional indicator symbol letters de"></p>
+<p class="unicode">1F1E9</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1EAregional indicator symbol letters dk"></p>
+<p class="unicode">1F1E9</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1F0regional indicator symbol letters es"></p>
+<p class="unicode">1F1EA</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1F8regional indicator symbol letters fi"></p>
+<p class="unicode">1F1EB</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1EEregional indicator symbol letters fr"></p>
+<p class="unicode">1F1EB</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1F7regional indicator symbol letters gb"></p>
+<p class="unicode">1F1EC</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1E7regional indicator symbol letters hk"></p>
+<p class="unicode">1F1ED</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1F0regional indicator symbol letters id"></p>
+<p class="unicode">1F1EE</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1E9regional indicator symbol letters ie"></p>
+<p class="unicode">1F1EE</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1EAregional indicator symbol letters il"></p>
+<p class="unicode">1F1EE</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1F1regional indicator symbol letters in"></p>
+<p class="unicode">1F1EE</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1F3regional indicator symbol letters it"></p>
+<p class="unicode">1F1EE</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1F9regional indicator symbol letters jp"></p>
+<p class="unicode">1F1EF</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1F5regional indicator symbol letters kr"></p>
+<p class="unicode">1F1F0</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1F7regional indicator symbol letters mo"></p>
+<p class="unicode">1F1F2</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1F4regional indicator symbol letters mx"></p>
+<p class="unicode">1F1F2</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1FDregional indicator symbol letters my"></p>
+<p class="unicode">1F1F2</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1FEregional indicator symbol letters nl"></p>
+<p class="unicode">1F1F3</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1F1regional indicator symbol letters no"></p>
+<p class="unicode">1F1F3</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1F4regional indicator symbol letters nz"></p>
+<p class="unicode">1F1F3</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1FFregional indicator symbol letters ph"></p>
+<p class="unicode">1F1F5</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1EDregional indicator symbol letters pl"></p>
+<p class="unicode">1F1F5</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1F1regional indicator symbol letters pr"></p>
+<p class="unicode">1F1F5</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1F7regional indicator symbol letters pt"></p>
+<p class="unicode">1F1F5</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1F9regional indicator symbol letters ru"></p>
+<p class="unicode">1F1F7</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1FAregional indicator symbol letters sa"></p>
+<p class="unicode">1F1F8</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1E6regional indicator symbol letters se"></p>
+<p class="unicode">1F1F8</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1EAregional indicator symbol letters sg"></p>
+<p class="unicode">1F1F8</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1ECregional indicator symbol letters tr"></p>
+<p class="unicode">1F1F9</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1F7regional indicator symbol letters us"></p>
+<p class="unicode">1F1FA</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1F8regional indicator symbol letters vn"></p>
+<p class="unicode">1F1FB</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1F3regional indicator symbol letters za"></p>
+<p class="unicode">1F1FF</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="-1F1E6registered sign">®</p>
+<p class="unicode">00AE</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="relieved face"></p>
+<p class="unicode">1F60C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="restroom"></p>
+<p class="unicode">1F6BB</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="revolving hearts"></p>
+<p class="unicode">1F49E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="ribbon"></p>
+<p class="unicode">1F380</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="rice ball"></p>
+<p class="unicode">1F359</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="rice cracker"></p>
+<p class="unicode">1F358</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="right-pointing magnifying glass"></p>
+<p class="unicode">1F50E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="rightwards arrow with hook">↪</p>
+<p class="unicode">21AA</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="ring"></p>
+<p class="unicode">1F48D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="roasted sweet potato"></p>
+<p class="unicode">1F360</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="rocket"></p>
+<p class="unicode">1F680</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="roller coaster"></p>
+<p class="unicode">1F3A2</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="rooster"></p>
+<p class="unicode">1F413</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="rose"></p>
+<p class="unicode">1F339</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="round pushpin"></p>
+<p class="unicode">1F4CD</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="rowboat"></p>
+<p class="unicode">1F6A3</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="rugby football"></p>
+<p class="unicode">1F3C9</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="runner"></p>
+<p class="unicode">1F3C3</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="running shirt with sash"></p>
+<p class="unicode">1F3BD</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="sagittarius">♐</p>
+<p class="unicode">2650</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="sailboat">⛵</p>
+<p class="unicode">26F5</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="sake bottle and cup"></p>
+<p class="unicode">1F376</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="satellite antenna"></p>
+<p class="unicode">1F4E1</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="saxophone"></p>
+<p class="unicode">1F3B7</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="school"></p>
+<p class="unicode">1F3EB</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="school satchel"></p>
+<p class="unicode">1F392</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="scorpius">♏</p>
+<p class="unicode">264F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="scroll"></p>
+<p class="unicode">1F4DC</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="seat"></p>
+<p class="unicode">1F4BA</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="see-no-evil monkey"></p>
+<p class="unicode">1F648</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="seedling"></p>
+<p class="unicode">1F331</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="shaved ice"></p>
+<p class="unicode">1F367</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="sheep"></p>
+<p class="unicode">1F411</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="ship"></p>
+<p class="unicode">1F6A2</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="shooting star"></p>
+<p class="unicode">1F320</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="shortcake"></p>
+<p class="unicode">1F370</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="shower"></p>
+<p class="unicode">1F6BF</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="silhouette of japan"></p>
+<p class="unicode">1F5FE</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="six pointed star with middle dot"></p>
+<p class="unicode">1F52F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="ski and ski boot"></p>
+<p class="unicode">1F3BF</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="skull"></p>
+<p class="unicode">1F480</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="sleeping face"></p>
+<p class="unicode">1F634</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="sleeping symbol"></p>
+<p class="unicode">1F4A4</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="sleepy face"></p>
+<p class="unicode">1F62A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="slice of pizza"></p>
+<p class="unicode">1F355</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="slot machine"></p>
+<p class="unicode">1F3B0</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="small blue diamond"></p>
+<p class="unicode">1F539</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="small orange diamond"></p>
+<p class="unicode">1F538</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="smiling cat face with heart-shaped eyes"></p>
+<p class="unicode">1F63B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="smiling cat face with open mouth"></p>
+<p class="unicode">1F63A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="smiling face with halo"></p>
+<p class="unicode">1F607</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="smiling face with heart-shaped eyes"></p>
+<p class="unicode">1F60D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="smiling face with horns"></p>
+<p class="unicode">1F608</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="smiling face with open mouth"></p>
+<p class="unicode">1F603</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="smiling face with open mouth and cold sweat"></p>
+<p class="unicode">1F605</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="smiling face with open mouth and smiling eyes"></p>
+<p class="unicode">1F604</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="smiling face with open mouth and tightly-closed eyes"></p>
+<p class="unicode">1F606</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="smiling face with smiling eyes"></p>
+<p class="unicode">1F60A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="smiling face with sunglasses"></p>
+<p class="unicode">1F60E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="smirking face"></p>
+<p class="unicode">1F60F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="smoking symbol"></p>
+<p class="unicode">1F6AC</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="snail"></p>
+<p class="unicode">1F40C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="snake"></p>
+<p class="unicode">1F40D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="snowboarder"></p>
+<p class="unicode">1F3C2</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="snowflake">❄</p>
+<p class="unicode">2744</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="snowman without snow">⛄</p>
+<p class="unicode">26C4</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="soccer ball">⚽</p>
+<p class="unicode">26BD</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="soft ice cream"></p>
+<p class="unicode">1F366</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="soon with rightwards arrow above"></p>
+<p class="unicode">1F51C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="south east arrow">↘</p>
+<p class="unicode">2198</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="south west arrow">↙</p>
+<p class="unicode">2199</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="spaghetti"></p>
+<p class="unicode">1F35D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="sparkle">❇</p>
+<p class="unicode">2747</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="sparkles">✨</p>
+<p class="unicode">2728</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="sparkling heart"></p>
+<p class="unicode">1F496</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="speak-no-evil monkey"></p>
+<p class="unicode">1F64A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="speaker"></p>
+<p class="unicode">1F508</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="speaker with cancellation stroke"></p>
+<p class="unicode">1F507</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="speaker with one sound wave"></p>
+<p class="unicode">1F509</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="speaker with three sound waves"></p>
+<p class="unicode">1F50A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="speech balloon"></p>
+<p class="unicode">1F4AC</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="speedboat"></p>
+<p class="unicode">1F6A4</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="spiral shell"></p>
+<p class="unicode">1F41A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="splashing sweat symbol"></p>
+<p class="unicode">1F4A6</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="spouting whale"></p>
+<p class="unicode">1F433</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="squared cjk unified ideograph-6e80"></p>
+<p class="unicode">1F235</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="squared cjk unified ideograph-7a7a"></p>
+<p class="unicode">1F233</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="squared cjk unified ideograph-55b6"></p>
+<p class="unicode">1F23A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="squared cjk unified ideograph-5272"></p>
+<p class="unicode">1F239</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="squared cjk unified ideograph-5408"></p>
+<p class="unicode">1F234</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="squared cjk unified ideograph-6307"></p>
+<p class="unicode">1F22F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="squared cjk unified ideograph-6708"></p>
+<p class="unicode">1F237</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="squared cjk unified ideograph-6709"></p>
+<p class="unicode">1F236</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="squared cjk unified ideograph-7121"></p>
+<p class="unicode">1F21A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="squared cjk unified ideograph-7533"></p>
+<p class="unicode">1F238</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="squared cjk unified ideograph-7981"></p>
+<p class="unicode">1F232</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="squared cl"></p>
+<p class="unicode">1F191</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="squared cool"></p>
+<p class="unicode">1F192</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="squared free"></p>
+<p class="unicode">1F193</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="squared id"></p>
+<p class="unicode">1F194</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="squared katakana koko"></p>
+<p class="unicode">1F201</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="squared katakana sa"></p>
+<p class="unicode">1F202</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="squared new"></p>
+<p class="unicode">1F195</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="squared ng"></p>
+<p class="unicode">1F196</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="squared ok"></p>
+<p class="unicode">1F197</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="squared sos"></p>
+<p class="unicode">1F198</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="squared up with exclamation mark"></p>
+<p class="unicode">1F199</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="squared vs"></p>
+<p class="unicode">1F19A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="station"></p>
+<p class="unicode">1F689</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="statue of liberty"></p>
+<p class="unicode">1F5FD</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="steam locomotive"></p>
+<p class="unicode">1F682</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="steaming bowl"></p>
+<p class="unicode">1F35C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="straight ruler"></p>
+<p class="unicode">1F4CF</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="strawberry"></p>
+<p class="unicode">1F353</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="sun behind cloud">⛅</p>
+<p class="unicode">26C5</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="sun with face"></p>
+<p class="unicode">1F31E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="sunflower"></p>
+<p class="unicode">1F33B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="sunrise"></p>
+<p class="unicode">1F305</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="sunrise over mountains"></p>
+<p class="unicode">1F304</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="sunset over buildings"></p>
+<p class="unicode">1F307</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="surfer"></p>
+<p class="unicode">1F3C4</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="sushi"></p>
+<p class="unicode">1F363</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="suspension railway"></p>
+<p class="unicode">1F69F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="swimmer"></p>
+<p class="unicode">1F3CA</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="syringe"></p>
+<p class="unicode">1F489</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="t-shirt"></p>
+<p class="unicode">1F455</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="tanabata tree"></p>
+<p class="unicode">1F38B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="tangerine"></p>
+<p class="unicode">1F34A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="taurus">♉</p>
+<p class="unicode">2649</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="taxi"></p>
+<p class="unicode">1F695</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="teacup without handle"></p>
+<p class="unicode">1F375</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="tear-off calendar"></p>
+<p class="unicode">1F4C6</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="telephone receiver"></p>
+<p class="unicode">1F4DE</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="telescope"></p>
+<p class="unicode">1F52D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="television"></p>
+<p class="unicode">1F4FA</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="tennis racquet and ball"></p>
+<p class="unicode">1F3BE</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="tent">⛺</p>
+<p class="unicode">26FA</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="thought balloon"></p>
+<p class="unicode">1F4AD</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="thumbs down sign"></p>
+<p class="unicode">1F44E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="thumbs up sign"></p>
+<p class="unicode">1F44D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="ticket"></p>
+<p class="unicode">1F3AB</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="tiger"></p>
+<p class="unicode">1F405</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="tiger face"></p>
+<p class="unicode">1F42F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="tired face"></p>
+<p class="unicode">1F62B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="toilet"></p>
+<p class="unicode">1F6BD</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="tokyo tower"></p>
+<p class="unicode">1F5FC</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="tomato"></p>
+<p class="unicode">1F345</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="tongue"></p>
+<p class="unicode">1F445</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="top hat"></p>
+<p class="unicode">1F3A9</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="top with upwards arrow above"></p>
+<p class="unicode">1F51D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="tractor"></p>
+<p class="unicode">1F69C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="trade mark sign">™</p>
+<p class="unicode">2122</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="train"></p>
+<p class="unicode">1F686</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="tram"></p>
+<p class="unicode">1F68A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="tram car"></p>
+<p class="unicode">1F68B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="triangular flag on post"></p>
+<p class="unicode">1F6A9</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="triangular ruler"></p>
+<p class="unicode">1F4D0</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="trident emblem"></p>
+<p class="unicode">1F531</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="trolleybus"></p>
+<p class="unicode">1F68E</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="trophy"></p>
+<p class="unicode">1F3C6</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="tropical drink"></p>
+<p class="unicode">1F379</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="tropical fish"></p>
+<p class="unicode">1F420</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="trumpet"></p>
+<p class="unicode">1F3BA</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="tulip"></p>
+<p class="unicode">1F337</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="turtle"></p>
+<p class="unicode">1F422</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="twisted rightwards arrows"></p>
+<p class="unicode">1F500</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="two hearts"></p>
+<p class="unicode">1F495</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="two men holding hands"></p>
+<p class="unicode">1F46C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="two women holding hands"></p>
+<p class="unicode">1F46D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="umbrella with rain drops">☔</p>
+<p class="unicode">2614</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="unamused face"></p>
+<p class="unicode">1F612</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="up down arrow">↕</p>
+<p class="unicode">2195</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="up-pointing red triangle"></p>
+<p class="unicode">1F53A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="up-pointing small red triangle"></p>
+<p class="unicode">1F53C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="upwards black arrow">⬆</p>
+<p class="unicode">2B06</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="vertical traffic light"></p>
+<p class="unicode">1F6A6</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="vibration mode"></p>
+<p class="unicode">1F4F3</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="victory hand">✌</p>
+<p class="unicode">270C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="video camera"></p>
+<p class="unicode">1F4F9</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="video game"></p>
+<p class="unicode">1F3AE</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="videocassette"></p>
+<p class="unicode">1F4FC</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="violin"></p>
+<p class="unicode">1F3BB</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="virgo">♍</p>
+<p class="unicode">264D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="volcano"></p>
+<p class="unicode">1F30B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="waning crescent moon symbol"></p>
+<p class="unicode">1F318</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="waning gibbous moon symbol"></p>
+<p class="unicode">1F316</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="warning sign">⚠</p>
+<p class="unicode">26A0</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="watch">⌚</p>
+<p class="unicode">231A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="water buffalo"></p>
+<p class="unicode">1F403</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="water closet"></p>
+<p class="unicode">1F6BE</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="water wave"></p>
+<p class="unicode">1F30A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="watermelon"></p>
+<p class="unicode">1F349</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="waving hand sign"></p>
+<p class="unicode">1F44B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="wavy dash">〰</p>
+<p class="unicode">3030</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="waxing crescent moon symbol"></p>
+<p class="unicode">1F312</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="waxing gibbous moon symbol"></p>
+<p class="unicode">1F314</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="weary cat face"></p>
+<p class="unicode">1F640</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="weary face"></p>
+<p class="unicode">1F629</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="wedding"></p>
+<p class="unicode">1F492</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="whale"></p>
+<p class="unicode">1F40B</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="wheelchair symbol">♿</p>
+<p class="unicode">267F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="white down pointing backhand index"></p>
+<p class="unicode">1F447</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="white exclamation mark ornament">❕</p>
+<p class="unicode">2755</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="white flower"></p>
+<p class="unicode">1F4AE</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="white heavy check mark">✅</p>
+<p class="unicode">2705</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="white large square">⬜</p>
+<p class="unicode">2B1C</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="white left pointing backhand index"></p>
+<p class="unicode">1F448</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="white medium small square">◽</p>
+<p class="unicode">25FD</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="white medium square">◻</p>
+<p class="unicode">25FB</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="white medium star">⭐</p>
+<p class="unicode">2B50</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="white question mark ornament">❔</p>
+<p class="unicode">2754</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="white right pointing backhand index"></p>
+<p class="unicode">1F449</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="white small square">▫</p>
+<p class="unicode">25AB</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="white smiling face">☺</p>
+<p class="unicode">263A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="white square button"></p>
+<p class="unicode">1F533</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="white up pointing backhand index"></p>
+<p class="unicode">1F446</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="white up pointing index">☝</p>
+<p class="unicode">261D</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="wind chime"></p>
+<p class="unicode">1F390</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="wine glass"></p>
+<p class="unicode">1F377</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="winking face"></p>
+<p class="unicode">1F609</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="wolf face"></p>
+<p class="unicode">1F43A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="woman"></p>
+<p class="unicode">1F469</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="woman with bunny ears"></p>
+<p class="unicode">1F46F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="womans boots"></p>
+<p class="unicode">1F462</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="womans clothes"></p>
+<p class="unicode">1F45A</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="womans hat"></p>
+<p class="unicode">1F452</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="womans sandal"></p>
+<p class="unicode">1F461</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="womens symbol"></p>
+<p class="unicode">1F6BA</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="worried face"></p>
+<p class="unicode">1F61F</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="wrapped present"></p>
+<p class="unicode">1F381</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="wrench"></p>
+<p class="unicode">1F527</p> 
+ </button>
+
+<button class="element-item free" data-category="CATERGORY">
+<p id="yellow heart"></p>
+<p class="unicode">1F49B</p> 
+ </button>
 
 
    </div>

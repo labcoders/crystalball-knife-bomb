@@ -1,4 +1,23 @@
 
+h1, h2{
+
+color: white;
+text-align: center;
+
+}
+
+#sorts{
+text-align: center;
+margin-left: auto;
+  margin-right: auto;
+}
+
+#filters{
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 #MySplitter {
   background-color: #FFFFFF;
   height: 100%;
@@ -7,27 +26,45 @@
 #MySplitter div {
   overflow: auto;
 }
-#MySplitter .vsplitbar {
-  width: 10px;
-  background: #FFFFFF;
+ .vsplitbar {
+  width: 25px;
+  background: #F0F0F0;
 }
-/*
+
+#outputBox{
+  opacity: 0.1;
+  background-color: black;
+  height: 90%;
+  width: 90%;
+  margin-left: 43px;
+  margin-right: 43px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  border-color: black;
+  font-color: white;
+}
+
 #topBar{
+  opacity: 0.1;
 height: 10%;
-top: 0;
+margin-top: 40px;
 width: 100%;
-background-color: #F3F3F3;
-}*/
+background-color: #000000;
+color: #000000;
+}
 
     #list{
-    background-color: #1F1F1F;
+    background-color: #232323;
     margin: 0;
-    width: 100%;
+    width: 99%;
     float: right;
+    overflow-y: auto;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
+    /*height: 50%;*/
+    height: 75vh;
     
     }
 
@@ -36,21 +73,23 @@ background-color: #F3F3F3;
       width:50%;
       height: 100%;
       float: left;
-      overflow: auto
+      overflow: auto;
+      opacity: 0.9;
      }
 
       #RightPane{
-      background-color: blue;
+      background-color: #232323;
          width:50%;
       height: 100%;
      float:right;
      overflow: auto;
+     opacity: 0.9;
      }
 
     #output{
-    width: 100%;
+    width: 99%;
     float: left;
-    background-color: #2C2C2C;
+    background-color: #232323;
     bottom: 0;
      float: left;
     overflow-y: auto;
@@ -60,7 +99,7 @@ background-color: #F3F3F3;
     
     #editor {
         margin: 0;
-        width: 100%;
+        width: 99%;
         resize: both;
         height: 45vh;
         top: 0;
@@ -76,7 +115,10 @@ background-color: #F3F3F3;
 }
 
 body {
+  position: fixed;
+  background-color: black;
   font-family: sans-serif;
+  background-image: url("http://data.whicdn.com/images/123781032/large.jpg");
 }
 
 .button {
@@ -84,7 +126,7 @@ body {
   padding: 0.5em 1.0em;
   background: #EEE;
   border: none;
-  border-radius: 7px;
+  border-radius: 2px;
   background-image: linear-gradient( to bottom, hsla(0, 0%, 0%, 0), hsla(0, 0%, 0%, 0.2) );
   color: #222;
   font-family: sans-serif;
@@ -149,8 +191,8 @@ body {
 .element-item {
   position: relative;
   float: left;
-  width: 100px;
-  height: 100px;
+  width: 50px;
+  height: 50px;
   margin: 5px;
   padding: 10px;
   background: #888;
@@ -188,11 +230,11 @@ body {
   top: 5px;
 }
 
-.element-item.alkali          { background: #5C5C5C;}
+.element-item.reserved          { background: #5C5C5C;}
 .element-item.alkaline-earth  { background: #5C5C5C;}
 .element-item.lanthanoid      { background: #5C5C5C;}
 .element-item.actinoid        { background: #5C5C5C;}
-.element-item.transition      { background: #5C5C5C;}
+.element-item.CATEGORY      { background: #5C5C5C;}
 .element-item.post-transition { background: #5C5C5C;}
 .element-item.metalloid       { background: #5C5C5C;}
 .element-item.diatomic        { background: #5C5C5C;}
