@@ -6,13 +6,14 @@
 %%
 
 \s+                   /* skip whitespace */
-\u0030\u20E3|\u0031\u20E3|\u0032\u20E3|\u0033\u20E3|\u0034\u20E3|\u0035\u20E3|\u0036\u20E3|\u0037\u20E3|\u0038\u20E3|\u0039\u20E3 return 'DIGIT';
+[\u0030-\u0039]\u20E3 return 'DIGIT'; /* ASCII digit followed by a square */
 
 "!"                   return 'END_NUMBER';
 
+"\uD83D\uDC89"        return 'INCLUDE'; /* black phone, include library into generated source */
+"\uD83C\uDF81"        return 'IMPORT' /* gift, reference to an external library */
+"\u2623"              return 'EXTERN' /*radioactive symbol */
 "\uD83C\uDFF4"        return 'FUNC'; /* waving black flag */
-"\u260E"              return 'IMPORT'; /* black telephone*/
-"\u{2623}"            return 'EXTERN' /*radioactive symbol */
 
 "\uD83D\uDCCF"        return 'SEP';
 "\u2b01"              return 'BIND';
@@ -25,7 +26,7 @@
 "\uD83D\uDC4D"             return 'TRUE';
 "\uD83D\uDC4E"             return 'FALSE';
 
-((?!\u270C|\u2796|[\u0030-\u0039]\u20E3|\uD83D\uDEA2|\uD83C\uDFF4|\<|\,|\!|\u2b01|\ud83c\udccf|\ud83c\udf1c|\ud83c\udf1b|\u261d|\uD83D\uDC48|\uD83D\uDC49|\uD83D\uDCE6).)+ return 'IDENT';
+((?!\uD83D\uDC89|\uD83C\uDF1C|\uD83C\uDF1B|\u261D|\uD83D\uDCCF|\u270C|\u2623|\u2796|[\u0030-\u0039]\u20E3|\uD83D\uDEA2|\uD83C\uDFF4|\uD83C\uDF81|\<|\,|\!|\u2b01|\ud83c\udccf|\ud83c\udf1c|\ud83c\udf1b|\u261d|\uD83D\uDC48|\uD83D\uDC49|\uD83D\uDCE6|\uD83D\uDCC8).)+ return 'IDENT';
 
 \u270C[^\u270C]\u270C return 'STR_LIT';
 
@@ -48,7 +49,8 @@ program : (decl)+ EOF { return $1; }
         ;
 
 decl : func_decl -> { func: $1 }
-     | import_decl { $$ = { import: $1 }; }
+     | import_decl -> { import: $1 }
+     | include_decl -> { include: $1 }
      | ffi_decl -> { ffi_decl: $1 }
      ;
 
@@ -67,8 +69,13 @@ idents : ident { console.log($1) ; $$ = [$1] }
 ident : IDENT { $$ = { ident: $1 }; }
       ;
 
-import_decl : IMPORT ident { $$ = { name: $2 }; }
+import_decl : IMPORT ident -> { source: $2 } /* import an emoji source file */
+            | IMPORT str_lit -> { compiled: $2 } /* import a JS file */
             ;
+
+include_decl : INCLUDE ident -> { source: $2 } /* include an emoji source file */
+             | INCLUDE str_lit -> { compiled: $2 } /* include a JS file */
+             ;
 
 ffi_decl : EXTERN ident str_lit -> { name: $2, externalName: $3 }
          ;
