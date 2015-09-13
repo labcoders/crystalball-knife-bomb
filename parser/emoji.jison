@@ -138,9 +138,9 @@ obj_lit : package str_lit value -> { name: $2, value: $3 }
 func_lit : FUNCTION patterns BIND value -> {name: null, params: $2, body: $4}
          ;
 
-pattern : wildcard -> { pattern: { wildcard: true } }
-        | ident -> { pattern: { variable: $1 } }
-        | lit_pat -> { pattern: { literal: $1 } }
+pattern : wildcard -> { wildcard: true }
+        | ident -> { variable: $1 }
+        | lit_pat -> { literal: $1 }
         | lparen pattern rparen -> $2
         ;
 

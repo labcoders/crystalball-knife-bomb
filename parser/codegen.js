@@ -9,11 +9,19 @@ exports.traverse = function(ir) {
 function Program(program) {
 	var o = "";
 	program.forEach(function(decl) {
-		if (decl.func) {
+		if (decl.func) { // Function declaration
 			o += "function " + decl.func.name.ident + "(";
 
 			var first = true;
-			decl.func.params.forEach(function(param) {
+			decl.func.patterns.forEach(function(pattern) {
+				if (pattern.wildcard) {
+					
+				} else if (pattern.variable) {
+
+				} else if (pattern.literal) {
+
+				}
+
 				if (first)
 					first = false;
 				else
