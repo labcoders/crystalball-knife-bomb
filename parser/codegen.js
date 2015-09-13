@@ -274,7 +274,7 @@ function emitFunctionLiteral(flit) {
     o.emit("  var locals = pmatch(params);");
     o.emit("  var resolver = new Resolver(locals);");
     o.emit("  return " + Value(flit.body) + ";");
-    o.emit("};");
+    o.emit("}");
 
     return o.render();
 }
