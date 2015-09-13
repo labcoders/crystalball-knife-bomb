@@ -61,7 +61,7 @@ function genHTML(){
 	   shortname = ":"+key.toString()+":"
 	   symbol = String.fromCharCode(parseInt(emojiObject[key], 16));
 	   unicode = emojiObject[key];
-	string = '<button class="'+ classname + '" data-category="'+category+'"> +\n'+'<h3 class="short-name">' + shortname + '</h3> '+'\n'+ '<p class="emoji">'+symbol+'</p>'+'\n'+'<p class="unicode">' + unicode + '</p> +\n'+' </button>'+"\n"
+	string = '<button class="'+ classname + '" data-category="'+category+'">' +'\n'+'<h3 class="short-name">' + shortname + '</h3> '+'\n'+ '<p class="emoji">'+symbol+'</p>'+'\n'+'<p class="unicode">' + unicode + '</p> '+'\n'+' </button>'+"\n"
 	console.log(string)
 	}
 //console.log(htmlString)
