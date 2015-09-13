@@ -150,7 +150,7 @@ function Program(program) {
 function makeFunctionName(func) {
     var i = functionCount;
     functionCount++;
-    return func.name.ident + '_' + i;
+    return func.name.ident;
 }
 
 function Declaration(decl) {
@@ -233,7 +233,7 @@ function Value(value) {
         o.emit(a_);
     }
 
-    return o.render;
+    return o.render();
 }
 
 function Literal(literal) {
