@@ -115,8 +115,9 @@ bool_lit : TRUE -> true
          ;
 
 str_lit : STR_LIT %{
+    var s = $1.slice(1, -1);
     console.log($1);
-    $$ = $1;
+    $$ = s;
 }%      ;
 
 bind : BIND %{
@@ -135,7 +136,7 @@ array_content : value -> [$1]
 obj_lit : package str_lit value -> { name: $2, value: $3 }
         ;
 
-func_lit : FUNCTION patterns BIND value -> {name: null, params: $2, body: $4}
+func_lit : FUNCTION patterns BIND value -> {name: null, patterns: $2, body: $4}
          ;
 
 pattern : wildcard -> { wildcard: true }
