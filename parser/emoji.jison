@@ -26,7 +26,7 @@
 "\uD83D\uDC4D"        return 'TRUE';
 "\uD83D\uDC4E"        return 'FALSE';
 
-((?!\uD83D\uDC89|\uD83C\uDF1C|\u261D|\uD83D\uDCCF|\u270C|\u2623|[\u0030-\u0039]\u20E3|\uD83C\uDFF4|\uD83C\uDF81|\<|\,|\!|\uD83C\uDCCF|\uD83C\uDF1C|\uD83C\uDF1B|\u261D|\uD83D\uDC48|\uD83D\uDC49|\uD83D\uDCE6|\uD83D\uDCC8|\uD83D\uDD73|\u2B01).)+ { console.log(yytext) ; return 'IDENT'};
+((?!\uD83D\uDC89|\uD83C\uDF1C|\u261D|\uD83D\uDCCF|\u270C|\u2623|[\u0030-\u0039]\u20E3|\uD83C\uDFF4|\uD83C\uDF81|\<|\,|\!|\uD83C\uDCCF|\uD83C\uDF1C|\uD83C\uDF1B|\u261D|\uD83D\uDC48|\uD83D\uDC49|\uD83D\uDCE6|\uD83D\uDCC8|\uD83D\uDD73|\u2B01).)+ { return 'IDENT'};
 
 \u270C[^\u270C]+\u270C return 'STR_LIT';
 
@@ -57,9 +57,11 @@ decl : func_decl -> { func: $1 }
      ;
 
 func_decl : func ident func_decl_patterns? bind value %{
+    var pats = typeof $3 === 'undefined' ? [] : $3;
+    console.log("> declared fn with " + pats.length + " arguments");
     $$ = {
         name: $2,
-        patterns: $3,
+        patterns: pats,
         body: $5
     };
 }%        ;
@@ -145,8 +147,12 @@ array_content : value -> [$1]
               | value ASEP array_content -> [$1].concat($3)
               ;
 
-obj_lit : package str_lit value -> { name: $2, value: $3 }
-        ;
+obj_lit : package str_lit value? %{ 
+    $$ = { 
+        name: $2, 
+        value: typeof $3 === 'undefined' ? null : $3
+    };
+}%      ;
 
 func_lit : FUNCTION patterns bind value -> {name: null, patterns: $2, body: $4}
          ;
@@ -189,7 +195,7 @@ obj_pat : package str_lit pattern -> { name: { str_lit: $2 }, pattern: $3 }
         ;
 
 wildcard : WILDCARD %{
-    console.log($1);
+    console.log("wildcard");
     $$ = $1;
 }%       ; 
 

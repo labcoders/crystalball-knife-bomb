@@ -9,13 +9,12 @@ console.log(input);
 console.log("PARSING");
 var ir = emoji.parser.parse(input.toString());
 
-console.log(ir);
-console.log(JSON.stringify(ir));
+console.log(JSON.stringify(ir, null, 2));
 
 var codegen = require("./codegen");
 
 var compiled = codegen.traverse(ir);
 
-console.log("Compiled:\n"+compiled);
-
-fs.writeFileSync("a.out.js", compiled);
+var dest = process.argv[2] + ".js";
+console.log("wrote output to " + dest);
+fs.writeFileSync(dest, compiled);
