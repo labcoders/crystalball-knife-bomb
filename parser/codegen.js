@@ -150,7 +150,7 @@ function Program(program) {
 function makeFunctionName(func) {
     var i = functionCount;
     functionCount++;
-    return func.name.ident + '_' + i;
+    return func.name.ident;
 }
 
 function Declaration(decl) {
@@ -233,7 +233,7 @@ function Value(value) {
         o.emit(a_);
     }
 
-    return o.render;
+    return o.render();
 }
 
 function Literal(literal) {
@@ -274,7 +274,7 @@ function emitFunctionLiteral(flit) {
     o.emit("  var locals = pmatch(params);");
     o.emit("  var resolver = new Resolver(locals);");
     o.emit("  return " + Value(flit.body) + ";");
-    o.emit("};");
+    o.emit("}");
 
     return o.render();
 }
