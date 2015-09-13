@@ -1,71 +1,3 @@
-function uniChar(n) {
-    console.log("unichar is running");
-    emojis.forEach(function(emoji, i, emojis) {
-        if (emoji["short_name"] == n) {
-            console.log(emoji["unified"]);
-            var num = parseInt(emoji["unified"]);
-            var str = emoji["unified"];
-            console.log(num);
-            console.log(String.fromCharCode(str));
-        }
-    });
-}
-
-function replace(name, index, array){
-    lean_array = array.splice(index);
-    new_array = lean_array.splice(index, 1, uniChar(name));
-    return new_array.join("");
-}
-
-$(document).on("keypress", function() {
-   
-    if (event.which == 13) {
-        line = editor.selection.getCursor()["row"];
-    
-        $(".ace_line").each(function(i, l) {
-            if (line == i) {
-                current = $(l).text().split(":");
-                current.forEach(function(a, i, current){
-                    //if (jQuery.inArray(a, names) > -1) {
-                        new_string = replace(a, i, current);
-                        console.log(new_string);
-                    //}
-                    //else {
-                    //    alert ("doesn't contain");
-                    //}
-                });
-            };
-        });
-    };
-});
-
-function genTable(){
-	var nameToUni = {}
-	for (var i=0; i < emojis.length; i++) {
-		nameToUni[emojis[i].name.toLowerCase()] = emojis[i].unified;
-	}
-	console.log(nameToUni);
-}
-
-
-function genHTML(){
-	classname = "CLASSNAME";
-	category = "CATERGORY";
-	htmlString = "\n";
-	for (var key in emojiObject) {
-	  if (emojiObject.hasOwnProperty(key)) {
-	   
-	   shortname = ":"+key.toString()+":"
-	   symbol = String.fromCharCode(parseInt(emojiObject[key], 16));
-	   unicode = emojiObject[key];
-	string = '<button class="'+ classname + '" data-category="'+category+'">' +'\n'+'<h3 class="short-name">' + shortname + '</h3> '+'\n'+ '<p class="emoji">'+symbol+'</p>'+'\n'+'<p class="unicode">' + unicode + '</p> '+'\n'+' </button>'+"\n"
-	console.log(string)
-	}
-//console.log(htmlString)
-}
-
-}
-
 var emojis = {"aerial tramway": "1F6A1",
 "airplane": "2708",
 "alarm clock": "23F0",
@@ -905,7 +837,8 @@ $(document).on("keypress", function() {
     if (event.which == 13) {
         for (key in emojiObject) {
             editor.find(":" + key + ":");
-            editor.replace(String.fromCharCode(parseInt(emojiObject[key], 16)));
+            editor.replace(emojione.toImage(key));
+//            editor.replace(String.fromCharCode(parseInt(emojiObject[key], 16)));
         }
         
 
