@@ -11,3 +11,9 @@ var ir = emoji.parser.parse(input.toString());
 
 console.log(ir);
 console.log(JSON.stringify(ir));
+
+var codegen = require("./codegen");
+
+var compiled = codegen.traverse(ir);
+
+console.log("Compiled:\n"+compiled);
