@@ -16,7 +16,7 @@
 "\uD83C\uDFF4"        return 'FUNC'; /* waving black flag */
 
 "\uD83D\uDCCF"        return 'SEP';
-"\u2b01"              return 'BIND';
+"\u2B01"              return 'BIND';
 "\uD83C\uDF1C"        return "LPAREN";
 "\uD83C\uDF1B"        return "RPAREN";
 "\uD83D\uDC48"        return "RBRACKET";
@@ -26,7 +26,7 @@
 "\uD83D\uDC4D"        return 'TRUE';
 "\uD83D\uDC4E"        return 'FALSE';
 
-((?!\uD83D\uDC89|\uD83C\uDF1C|\uD83C\uDF1B|\u261D|\uD83D\uDCCF|\u270C|\u2623|[\u0030-\u0039]\u20E3|\uD83C\uDFF4|\uD83C\uDF81|\<|\,|\!|\uD83C\uDCCF|\uD83C\uDF1C|\uD83C\uDF1B|\u261D|\uD83D\uDC48|\uD83D\uDC49|\uD83D\uDCE6|\uD83D\uDCC8|\uD83D\uDD73).)+ return 'IDENT';
+((?!\uD83D\uDC89|\uD83C\uDF1C|\u261D|\uD83D\uDCCF|\u270C|\u2623|[\u0030-\u0039]\u20E3|\uD83C\uDFF4|\uD83C\uDF81|\<|\,|\!|\uD83C\uDCCF|\uD83C\uDF1C|\uD83C\uDF1B|\u261D|\uD83D\uDC48|\uD83D\uDC49|\uD83D\uDCE6|\uD83D\uDCC8|\uD83D\uDD73|\u2B01).)+ { console.log(yytext) ; return 'IDENT'};
 
 \u270C[^\u270C]+\u270C return 'STR_LIT';
 
@@ -72,13 +72,13 @@ patterns : pattern -> [$1]
          ;
 
 ident : IDENT %{ 
-    console.log($1);
+    console.log("ident: " + $1);
     $$ = { ident: $1 }; 
 }
       ;
 
 func : FUNC %{
-    console.log($1);
+    console.log("func");
     $$ = $1;
 }%   ;
 
@@ -93,10 +93,10 @@ include_decl : INCLUDE ident -> { source: $2 } /* include an emoji source file *
 ffi_decl : EXTERN ident str_lit -> { name: $2, externalName: $3 }
          ;
 
-value : LPAREN value RPAREN -> $2
-      | ident sep value -> [$1].concat($3)
-      | ident -> [$1]
-      | literal -> [$1]
+value : lparen value rparen -> [$2]
+      | ident sep value -> [{variable: $1}].concat($3)
+      | ident -> [{variable: $1}]
+      | literal -> [{literal: $1}]
       ;
 
 literal : int_lit -> { int: $1 }
@@ -107,8 +107,19 @@ literal : int_lit -> { int: $1 }
         | func_lit -> {func: $1 }
         ;
 
-int_lit : DIGIT+ END_NUMBER -> Number($1.map(function(e) { return e[0] }).join(""))
-        ;
+int_lit : digit+ end_number %{
+    var n = Number($1.map(function(e) { return e[0] }).join(""));
+    console.log("number: " + n);
+    $$ = n;
+}%      ;
+
+digit : DIGIT %{
+    $$ = $1;
+}%    ;
+
+end_number : END_NUMBER %{
+    $$ = $1;
+}%         ;
 
 bool_lit : TRUE -> true
          | FALSE -> false
@@ -116,11 +127,12 @@ bool_lit : TRUE -> true
 
 str_lit : STR_LIT %{
     var s = $1.slice(1, -1);
-    console.log($1);
+    console.log("str: " + s);
     $$ = s;
 }%      ;
 
 bind : BIND %{
+    console.log("bind");
     $$ = $1;
 }%
      ;
@@ -136,13 +148,16 @@ array_content : value -> [$1]
 obj_lit : package str_lit value -> { name: $2, value: $3 }
         ;
 
-func_lit : FUNCTION patterns BIND value -> {name: null, patterns: $2, body: $4}
+func_lit : FUNCTION patterns bind value -> {name: null, patterns: $2, body: $4}
          ;
 
 pattern : wildcard -> { wildcard: true }
         | ident -> { variable: $1 }
-        | lit_pat -> { literal: $1 }
-        | lparen pattern rparen -> $2
+        | lit_pat { console.log("pattern " + JSON.stringify($1)) ; $$ = { literal: $1 }; }
+        | lparen pattern rparen %{ 
+            console.log("nested pattern: " + JSON.stringify($2));
+            $$ = $2;
+        }%
         ;
 
 lit_pat : bool_pat -> { bool: $1 }
@@ -169,7 +184,7 @@ array_pat_contents : pattern -> [$1]
                    | pattern ASEP array_pat_contents -> [$1].concat($3)
                    ;
 
-obj_pat : package str_lit pattern -> { name: { str_lit: $2 }, pattern: $3.pattern }
+obj_pat : package str_lit pattern -> { name: { str_lit: $2 }, pattern: $3 }
         | package wildcard pattern -> { name: { wildcard: true }, pattern: $3.pattern }
         ;
 
@@ -179,21 +194,21 @@ wildcard : WILDCARD %{
 }%       ; 
 
 package : PACKAGE %{
-    console.log($1);
+    console.log("package");
     $$ = $1;
 }%      ;
 
 sep : SEP %{
-    console.log($1);
+    console.log("sep");
     $$ = $1;
 }%  ;
 
 lparen : LPAREN %{
-    console.log($1);
+    console.log("lparen");
     $$ = $1;
 }%     ;
 
 rparen : RPAREN %{
-    console.log($1);
+    console.log("rparen");
     $$ = $1;
 }%     ;
