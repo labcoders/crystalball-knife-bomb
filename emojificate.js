@@ -67,7 +67,7 @@ function genHTML(){
 
 
 
-var emojis = {"aerial tramway": "F6A1",
+var emojis = {"aerial tramway": "1F6A1",
 "airplane": "2708",
 "alarm clock": "23F0",
 "alien monster": "F47E","ambulance": "F691",
@@ -906,7 +906,8 @@ $(document).on("keypress", function() {
     if (event.which == 13) {
         for (key in emojiObject) {
             editor.find(":" + key + ":");
-            editor.replace(String.fromCharCode(parseInt("0x"+emojiObject[key], 16)));
+            editor.replace(emojione.toImage(key));
+//            editor.replace(String.fromCharCode(parseInt(emojiObject[key], 16)));
         }
         
 

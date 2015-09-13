@@ -1,9 +1,10 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>  
   <meta charset="UTF-8">
 
-  <title>💣 </title>
+ <title>Emoji Editor</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <title>&#128302;&#128298;💣</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> 
@@ -13,6 +14,14 @@
  <script src="emojificate.js"></script>
  <script src-"parser/codegen.js"></script>
  <script src="parser/emoji.js"></script>
+ 
+<script type="text/javascript" src="emojiController.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+<script src="//www.parsecdn.com/js/parse-1.6.0.min.js"></script>
+<script src="//cdn.jsdelivr.net/emojione/1.5.0/lib/js/emojione.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/emojione/1.5.0/assets/css/emojione.min.css" />
   <!-- get rid of this later for deployment -->
   <link rel="stylesheet" type="text/css" href="style.css" media="screen">
 
@@ -4580,8 +4589,16 @@ function compile(){
  </div>
 </div>
 
-<script src="emojificate.js"></script>
+
+
+<link rel="stylesheet" href="style.css" />
+</head>
+<body ng-controller="emojiController">
+<div ng-bind="source" id="source" contentEditable="true"></div>
+<button ng-click="toImage()">Convert to Images</button>
+<button ng-click="toUnicode()">Convert to Unicode</button>
+<button ng-click="save()">Save to Cloud</button>
+<button ng-click="source=''">Clear</button>
+
 </body>
 </html>
-
-
