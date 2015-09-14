@@ -58,7 +58,26 @@ function Setup() {
     o.emit("  this.message = 'There is no binding in scope with name ' + name;");
     o.emit("}");
 
-    o.emit("var checkParam = function(pat, param) {");
+    // For a given invocation(params), returns the first alternative that matches
+    o.emit("function findMatch(alts, params) {");
+    o.emit("  for (int i=0; i<alts.length; i++) {");
+    o.emit("    if (matchEquation(alts[i].patterns, params) != null)");
+    o.emit("      return i;");
+    o.emit("  }");
+    o.emit("  return -1;");
+
+    // Returns whether params match an equation's pattern list
+    o.emit("function matchEquation(patterns, params) {")
+    o.emit("  if(patterns.length != params.length) return null;");
+
+    o.emit("  for (int i=0; i<patterns; i++) {");
+    o.emit("    if (matchParam(patterns[i], params[i]) == null) return null;");
+
+    o.emit("  return [];");
+    o.emit("}");
+
+    // Returns whether a single param matches a single pattern
+    o.emit("function matchParam(pat, param) {");
     o.emit("  if(pat.wildcard) return [];");
     o.emit("  if(pat.variable) return [[pat.variable.ident, param]];");
 
@@ -82,7 +101,7 @@ function Setup() {
     o.emit("      var bindings = [];");
     o.emit("      for(var i = 0; i < pat.literal.tuple.length; i++)");
     o.emit("        bindings = bindings.concat(")
-    o.emit("            checkParam(pat.literal.tuple[i], param[i]));");
+    o.emit("            matchParam(pat.literal.tuple[i], param[i]));");
     o.emit("      return bindings;");
 
     o.emit("    }");
@@ -95,7 +114,7 @@ function Setup() {
     o.emit("      if(!pat.literal.obj_pat.name.wildcard && ( pat.literal.obj_pat.name.str_lit !== param.name || param.value == null ) )");
     o.emit("        console.log('object pattern value match failed');");
     o.emit("        return null;");
-    o.emit("      return checkParam(pat.literal.obj_pat.pattern, param.value);");
+    o.emit("      return matchParam(pat.literal.obj_pat.pattern, param.value);");
     o.emit("    }");
 
     o.emit("  }");
@@ -133,7 +152,6 @@ function liftIdentifier(identifier) {
       'quotes': 'single',
       'wrap': true
     });
-
     return lifted; // Bro, do you even?
 }
 
@@ -145,7 +163,6 @@ function hexify(identifier) {
         hex = this.charCodeAt(i).toString(16);
         result += ("000"+hex).slice(-4);
     }
-
     return result
 }
 
@@ -173,6 +190,7 @@ function Declaration(decl) {
 
     if (decl.func) { // Function declaration
         console.log("declaring function " + decl.func.name.ident);
+        o.emit(FunctionDeclaration(decl.func));
         o.emit("addEquation(\n'" + makeFunctionName(decl.func) + "',\n" +
                 emitFunctionLiteral(decl.func) + "\n);");
     } else if (decl.ffi) {
@@ -185,12 +203,31 @@ function Declaration(decl) {
     return o.render();
 }
 
+function FunctionDeclaration(func) {
+    var o = new Output();
+
+    var outputAlts = func.alternatives.map(function(alt) { // Traverse values too
+        alt.body = Expression(alt.body);
+        return alt;
+        //return {patterns:alt.patterns,body:Expression(alt.body)};
+    }
+
+    o.emit("function func_" + hexify(func.name) + "(params) {");
+    o.emit("  var alternatives = " + JSON.stringify(func.alternatives) +";");
+    o.emit("  var pmatch = findMatch(alternatives, params);");
+    o.emit("  if (pmatch >= 0 && pmatch < alternatives.length)");
+    o.emit("    return alternatives[pmatch].body();");
+    o.emit("}");
+
+    return o.render();
+}
+
 /**
  * Emits a value, i.e. a function call. Sometimes these are calls to nullary
  * functions. When value is called, a Resolver named "resolve" is always in
  * scope to determine which function a name should refer to.
  */
-function Value(value) {
+function Expression(value) {
     var o = new Output();
 
     console.log("Emitting value: " + JSON.stringify(value, null, 2));
@@ -212,32 +249,32 @@ function Value(value) {
         var head = value[0];
 
         o.emit("(function() {");
-        o.emit("var head = " + Value(head) + ";");
+        o.emit("var head = " + Expression(head) + ";");
         o.emit("return head(["); // begin call to head
 
         o.emit( // render argument list
                 value.slice(1).map(function(b) {
-                    var b_ = Value(b);
+                    var b_ = Expression(b);
                     return b_;
                 }).join(',')
         );
 
         o.emit("]);"); // end call to head
-        o.emit("})()");
+        o.emit("})");
     }
     else { // then the value is an identifier or a literal
-        var a_ = null;
+        o.emitRaw("(function() { return ");
         if(typeof value.literal !== 'undefined') {
-            a_ = Literal(value.literal);
+            o.emitRaw(Literal(value.literal);
         }
         else if(typeof value.variable !== 'undefined') {
-            a_ = "resolver.resolve('" + value.variable.ident + "')([])";
+            o.emitRaw(hexify(value.variable.ident));
         }
         else {
             throw new InconsistentSyntaxTree("unrecognized value node: " +
                     JSON.stringify(value));
         }
-        o.emit(a_);
+        o.emit(";})");
     }
 
     return o.render();
@@ -260,32 +297,19 @@ function Literal(literal) {
                 first = false;
             else
                 o += ", ";
-            o += Value(value);
+            o += Expression(value);
         });
         o += "]";
     } else if (literal.obj) {
         o += '{ name:"' + literal.obj.name + '", ' +
             'value: ' + (literal.obj.value == null ?
-                null : Value(literal.obj.value)) + '}';
+                null : Expression(literal.obj.value)) + '}';
     } else if (literal.func) {
         o += emitFunctionLiteral(literal.func);
     } else
         console.error("literal type not matched");
 
     return o;
-}
-
-function emitFunctionLiteral(flit) {
-    var o = new Output();
-
-    o.emit("function(params) {");
-    o.emit("  var pmatch = " + PatternMatch(flit.patterns) + ";");
-    o.emit("  var locals = pmatch(params);");
-    o.emit("  var resolver = new Resolver(locals);");
-    o.emit("  return " + Value(flit.body) + ";");
-    o.emit("}");
-
-    return o.render();
 }
 
 /**

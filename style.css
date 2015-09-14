@@ -1,3 +1,12 @@
+@font-face {
+  font-family: "OpenSansEmoji";
+  src:'font/OpenSansEmoji.ttf' format('ttf');
+  text-decoration: none;
+  font-style: normal;
+}
+.emoji {
+  font-family: "OpenSansEmoji";
+}
 
 h1, h2{
 
@@ -9,7 +18,18 @@ text-align: center;
 #sorts{
 text-align: center;
 margin-left: auto;
-  margin-right: auto;
+margin-right: auto;
+height: 55vh;
+}
+
+
+#textbox{
+
+}
+
+#source{
+background-color: white;
+height: 50vh;
 }
 
 #filters{
@@ -42,34 +62,35 @@ margin-left: auto;
   margin-bottom: 20px;
   border-color: black;
   font-color: white;
+  overflow: auto;
 }
-
+/*
 #topBar{
-  opacity: 0.1;
+  opacity: 0.9;
 height: 10%;
 margin-top: 40px;
 width: 100%;
-background-color: #000000;
-color: #000000;
-}
+background-color: #232323;
+color: #232323;
+z-index: 1;
+}*/
 
     #list{
     background-color: #232323;
     margin: 0;
-    width: 99%;
+    width: 100%;
     float: right;
     overflow-y: auto;
     top: 0;
     bottom: 0;
     left: 0;
-    right: 0;
-    /*height: 50%;*/
+    right: 0;å
     height: 75vh;
+    
     
     }
 
      #LeftPane{
-      background-color: red;
       width:50%;
       height: 100%;
       float: left;
@@ -89,7 +110,7 @@ color: #000000;
     #output{
     width: 99%;
     float: left;
-    background-color: #232323;
+    background-color: white;
     bottom: 0;
      float: left;
     overflow-y: auto;
@@ -119,6 +140,7 @@ body {
   background-color: black;
   font-family: sans-serif;
   background-image: url("http://data.whicdn.com/images/123781032/large.jpg");
+  font-family: "OpenSansEmoji";
 }
 
 .button {
