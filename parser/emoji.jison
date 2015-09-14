@@ -14,6 +14,7 @@
 "\uD83C\uDF81"        return 'IMPORT' /* gift, reference to an external library */
 "\u2623"              return 'EXTERN' /*radioactive symbol */
 "\uD83C\uDFF4"        return 'FUNC'; /* waving black flag */
+"\u21AA\uFE0F"        return 'ALT'; /* right hook arrow */
 
 "\uD83D\uDCCF"        return 'SEP';
 "\u2B01"              return 'BIND';
@@ -26,7 +27,7 @@
 "\uD83D\uDC4D"        return 'TRUE';
 "\uD83D\uDC4E"        return 'FALSE';
 
-((?!\uD83D\uDC89|\uD83C\uDF1C|\u261D|\uD83D\uDCCF|\u270C|\u2623|[\u0030-\u0039]\u20E3|\uD83C\uDFF4|\uD83C\uDF81|\<|\,|\!|\uD83C\uDCCF|\uD83C\uDF1C|\uD83C\uDF1B|\u261D|\uD83D\uDC48|\uD83D\uDC49|\uD83D\uDCE6|\uD83D\uDCC8|\uD83D\uDD73|\u2B01).)+ { return 'IDENT'};
+((?!\uD83D\uDC89|\uD83C\uDF1C|\u261D|\uD83D\uDCCF|\u270C|\u2623|[\u0030-\u0039]\u20E3|\uD83C\uDFF4|\uD83C\uDF81|\<|\,|\!|\uD83C\uDCCF|\uD83C\uDF1C|\uD83C\uDF1B|\u261D|\uD83D\uDC48|\uD83D\uDC49|\uD83D\uDCE6|\uD83D\uDCC8|\uD83D\uDD73|\u2B01|\u21AA\uFE0F).)+ { return 'IDENT'};
 
 \u270C[^\u270C]+\u270C return 'STR_LIT';
 
@@ -47,27 +48,34 @@
 
 %% /* language grammar */
 
-program : (decl)+ EOF { return $1; }
+program : (stmt)* (decl)+ EOF %{
+    var stmts = typeof $1 === 'undefined' ? [] : $1;
+    return {statements: stmts, declarations: $2};
+    }%
         ;
 
-decl : func_decl -> { func: $1 }
-     | import_decl -> { import: $1 }
-     | include_decl -> { include: $1 }
-     | ffi_decl -> { ffi_decl: $1 }
+stmt : import_stmt -> { import: $1 }
+     | include_stmt -> { include: $1 }
      ;
 
-func_decl : func ident func_decl_patterns? bind value %{
-    var pats = typeof $3 === 'undefined' ? [] : $3;
-    console.log("> declared fn with " + pats.length + " arguments");
+decl : ffi_decl -> { ffi: $1 }
+     | func_decl -> { func: $1 }
+     ;
+
+func_decl : func ident alt+ -> {name: $ident, alternatives: $3}
+          ;
+
+alt : ALT lambda -> $lambda
+    ;
+
+lambda : patterns? bind expr %{
+    var pats = typeof $1 === 'undefined' ? [] : $1;
+    console.log("> lambda with " + pats.length + " arguments");
     $$ = {
-        name: $2,
         patterns: pats,
-        body: $5
+        body: $expr
     };
 }%        ;
-
-func_decl_patterns : sep patterns -> $2
-                   ;
 
 patterns : pattern -> [$1]
          | pattern sep patterns -> [$1].concat($3)
@@ -84,19 +92,19 @@ func : FUNC %{
     $$ = $1;
 }%   ;
 
-import_decl : IMPORT ident -> { source: $2 } /* import an emoji source file */
+import_stmt : IMPORT ident -> { source: $2 } /* import an emoji source file */
             | IMPORT str_lit -> { compiled: $2 } /* import a JS file */
             ;
 
-include_decl : INCLUDE ident -> { source: $2 } /* include an emoji source file */
+include_stmt : INCLUDE ident -> { source: $2 } /* include an emoji source file */
              | INCLUDE str_lit -> { compiled: $2 } /* include a JS file */
              ;
 
 ffi_decl : EXTERN ident str_lit -> { name: $2, externalName: $3 }
          ;
 
-value : lparen value rparen -> [$2]
-      | ident sep value -> [{variable: $1}].concat($3)
+expr : lparen expr rparen -> [$2]
+      | ident sep expr -> [{variable: $1}].concat($3)
       | ident -> [{variable: $1}]
       | literal -> [{literal: $1}]
       ;
@@ -154,7 +162,7 @@ obj_lit : package str_lit value? %{
     };
 }%      ;
 
-func_lit : FUNCTION patterns bind value -> {name: null, patterns: $2, body: $4}
+func_lit : FUNCTION lambda
          ;
 
 pattern : wildcard -> { wildcard: true }

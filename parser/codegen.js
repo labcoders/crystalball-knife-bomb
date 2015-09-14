@@ -1,4 +1,5 @@
 var fs = require('fs'); // To import/include external files
+var jsesc = require('jsesc');
 var sourceExtension = "em"; // Used in file paths
 var compiledExtension = "js";
 
@@ -57,41 +58,6 @@ function Setup() {
     o.emit("  this.message = 'There is no binding in scope with name ' + name;");
     o.emit("}");
 
-    o.emit("var _equations = {}");
-
-    o.emit("var addEquation = function(name, eqn) {");
-    o.emit("  if(typeof _equations[name] === 'undefined')");
-    o.emit("    _equations[name] = [];");
-    o.emit("  _equations[name].push(eqn);");
-    o.emit("}");
-
-    o.emit("var dispatchEquation = function(name, params, index) {");
-    o.emit("  var i = typeof index === 'undefined' ? 0 : index;");
-    o.emit("  console.log('trying dispatch #' + i + ' for ' + name + ' with ' + JSON.stringify(params));");
-
-    // no such equation
-    o.emit("  if(typeof _equations[name] === 'undefined')")
-    o.emit("    throw new NameError(name);");
-
-    // ran out of equations
-    o.emit("  if(i >= _equations[name].length) {");
-    o.emit("    console.log('all patterns checked');");
-    o.emit("    throw new PatternMatchError();");
-    o.emit("  }");
-
-    o.emit("  var f = _equations[name][i];");
-    o.emit("  try {");
-    o.emit("    return f(params);");
-    o.emit("  }");
-    o.emit("  catch(e) {");
-    o.emit("    if(e instanceof PatternMatchError) {");
-    o.emit("      return dispatchEquation(name, params, i + 1);");
-    o.emit("    }");
-    o.emit("    else throw e;");
-    o.emit("  }");
-
-    o.emit("}");
-
     o.emit("var checkParam = function(pat, param) {");
     o.emit("  if(pat.wildcard) return [];");
     o.emit("  if(pat.variable) return [[pat.variable.ident, param]];");
@@ -105,12 +71,12 @@ function Setup() {
 
     o.emit("      if(param instanceof Array) {");
     o.emit("        console.log('array type match failed');");
-    o.emit("        throw new PatternMatchError();");
+    o.emit("        return null;");
     o.emit("      }");
 
     o.emit("      if(param.length !== pat.literal.tuple.length) {");
     o.emit("        console.log('array length match failed');");
-    o.emit("        throw new PatternMatchError();");
+    o.emit("        return null;");
     o.emit("      }");
 
     o.emit("      var bindings = [];");
@@ -124,34 +90,18 @@ function Setup() {
     o.emit("    if(typeof pat.literal.obj_pat !== 'undefined') {");
     o.emit("      if(typeof param !== 'object') {");
     o.emit("        console.log('object type match failed');");
-    o.emit("        throw new PatternMatchError();");
+    o.emit("        return null;");
     o.emit("      }");
     o.emit("      if(!pat.literal.obj_pat.name.wildcard && ( pat.literal.obj_pat.name.str_lit !== param.name || param.value == null ) )");
     o.emit("        console.log('object pattern value match failed');");
-    o.emit("        throw new PatternMatchError();");
+    o.emit("        return null;");
     o.emit("      return checkParam(pat.literal.obj_pat.pattern, param.value);");
     o.emit("    }");
 
     o.emit("  }");
 
     o.emit("  console.log('unknown pattern failure');");
-    o.emit("  throw new PatternMatchError();");
-    o.emit("}");
-
-    // the resolver finds a function with a given name. If such a function
-    // exists, it is returned. All such functions take one argument, which is
-    // in fact an array.
-    o.emit("function Resolver(localAssoc) {");
-    o.emit("  var locals = {};");
-    o.emit("  localAssoc.forEach(function(a) { locals[a[0]] = a[1]; });");
-    o.emit("  this.resolve = function(name) {");
-    o.emit("    if(typeof locals[name] !== 'undefined') return locals[name];");
-    o.emit("    if(typeof _equations[name] !== 'undefined')");
-    o.emit("      return function(params) {");
-    o.emit("        return dispatchEquation(name, params);");
-    o.emit("      }");
-    o.emit("    throw new NameError(name);");
-    o.emit("  }"); // TODO implement module function checking !
+    o.emit("  return null;");
     o.emit("}");
 
     return o.render();
@@ -160,7 +110,12 @@ function Setup() {
 function Program(program) {
     var o = new Output();
     o.emit(Setup());
-    program.forEach(function(decl) {
+
+    program.statements.forEach(function(stmt) {
+        o.emit(Declaration(stmt));
+    });
+
+    program.declarations.forEach(function(decl) {
         o.emit(Declaration(decl));
     });
     o.emit("dispatchEquation('" + emojiLiterals.FOUR_LEAF_CLOVER + "', []);");
@@ -173,6 +128,46 @@ function makeFunctionName(func) {
     return func.name.ident;
 }
 
+function liftIdentifier(identifier) {
+    var lifted = jsesc(identifier, {
+      'quotes': 'single',
+      'wrap': true
+    });
+
+    return lifted; // Bro, do you even?
+}
+
+//stackoverflow.com/questions/21647928/javascript-unicode-string-to-hex
+function hexify(identifier) {
+    var hex, i;
+    var result = "";
+    for (i=0; i<this.length; i++) {
+        hex = this.charCodeAt(i).toString(16);
+        result += ("000"+hex).slice(-4);
+    }
+
+    return result
+}
+
+function Statement(stmt) {
+    var o = new Output();
+
+    if (stmt.include) {
+        var filename = stmt.include.source ? stmt.include.source.ident + "." + sourceExtension : stmt.include.compiled + "." + compiledExtension;
+
+        var data = fs.readFileSync(filename, 'utf8');
+        o.emit(data);
+    } else if (stmt.import) {
+        var name = stmt.import.source ? stmt.import.source.ident : stmt.import.compiled;
+        o.emit('var ' + name + ' = require("./' + name + '");'); // Require the file
+    } else {
+        console.error("declaration type not matched: " + JSON.stringify(decl));
+        throw new Error("unmatched declaration");
+    }
+
+    return o.render();
+}
+
 function Declaration(decl) {
     var o = new Output();
 
@@ -180,17 +175,8 @@ function Declaration(decl) {
         console.log("declaring function " + decl.func.name.ident);
         o.emit("addEquation(\n'" + makeFunctionName(decl.func) + "',\n" +
                 emitFunctionLiteral(decl.func) + "\n);");
-    } else if (decl.include) {
-        var filename = decl.include.source ? decl.include.source.ident + "." + sourceExtension : decl.include.compiled + "." + compiledExtension;
-
-        var data = fs.readFileSync(filename, 'utf8');
-        o.emit(data);
-
-    } else if (decl.import) {
-        var name = decl.import.source ? decl.import.source.ident : decl.import.compiled;
-        o.emit('var ' + name + ' = require("./' + name + '");'); // Require the file
-    } else if (decl.ffi_decl) {
-        o.emit("var " + decl.ffi_decl.name.ident + " = " + decl.ffi_decl.externalName + ";");
+    } else if (decl.ffi) {
+        o.emit("var " + decl.ffi.name.ident + " = " + decl.ffi.externalName + ";");
     } else {
         console.error("declaration type not matched: " + JSON.stringify(decl));
         throw new Error("unmatched declaration");
