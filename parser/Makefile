@@ -1,5 +1,5 @@
 JISON = jison
-CBKB = node emoji-cli.js
+CBKB = node compiler.js
 
 .PHONY: all
 all: emoji.js

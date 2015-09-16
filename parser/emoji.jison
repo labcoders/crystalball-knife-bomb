@@ -20,8 +20,8 @@
 "\u2B01"              return 'BIND';
 "\uD83C\uDF1C"        return "LPAREN";
 "\uD83C\uDF1B"        return "RPAREN";
-"\uD83D\uDC48"        return "RBRACKET";
 "\uD83D\uDC49"        return "LBRACKET";
+"\uD83D\uDC48"        return "RBRACKET";
 "\u261D"              return "ASEP";
 
 "\uD83D\uDC4D"        return 'TRUE';
@@ -65,12 +65,14 @@ decl : ffi_decl -> { ffi: $1 }
 func_decl : func ident alt+ -> {name: $ident, alternatives: $3}
           ;
 
-alt : ALT lambda -> $lambda
-    ;
+alt : alt_tok lambda %{
+    console.log($lambda);
+    $$ = $lambda;
+}%  ;
 
 lambda : patterns? bind expr %{
     var pats = typeof $1 === 'undefined' ? [] : $1;
-    console.log("> lambda with " + pats.length + " arguments");
+    console.log("> pattern match with " + pats.length + " arguments");
     $$ = {
         patterns: pats,
         body: $expr
@@ -103,14 +105,15 @@ include_stmt : INCLUDE ident -> { source: $2 } /* include an emoji source file *
 ffi_decl : EXTERN ident str_lit -> { name: $2, externalName: $3 }
          ;
 
-expr : lparen expr rparen -> [$2]
-      | ident sep expr -> [{variable: $1}].concat($3)
-      | ident -> [{variable: $1}]
-      | literal -> [{literal: $1}]
-      ;
+expr : lparen expr rparen expr?  %{
+    $$ = typeof $4 === 'undefined' ? [$2] : [$2, $4];
+}%
+     | ident sep expr -> [{variable: $1}].concat($3)
+     | ident -> [{variable: $1}]
+     | literal -> [{literal: $1}]
+     ;
 
 literal : int_lit -> { int: $1 }
-        | bool_lit -> { bool: $1 }
         | str_lit -> { str: $1 }
         | array_lit -> { tuple: $1 }
         | obj_lit -> { obj: $1 }
@@ -130,10 +133,6 @@ digit : DIGIT %{
 end_number : END_NUMBER %{
     $$ = $1;
 }%         ;
-
-bool_lit : TRUE -> true
-         | FALSE -> false
-         ;
 
 str_lit : STR_LIT %{
     var s = $1.slice(1, -1);
@@ -174,15 +173,11 @@ pattern : wildcard -> { wildcard: true }
         }%
         ;
 
-lit_pat : bool_pat -> { bool: $1 }
-        | int_pat -> { int: $1 }
+lit_pat : int_pat -> { int: $1 }
         | str_pat -> { str: $1 }
         | array_pat -> { tuple: $1 }
         | obj_pat -> { obj: $1 }
         ;
-
-bool_pat : bool_lit
-         ;
 
 int_pat : int_lit
         ;
@@ -198,8 +193,8 @@ array_pat_contents : pattern -> [$1]
                    | pattern ASEP array_pat_contents -> [$1].concat($3)
                    ;
 
-obj_pat : package str_lit pattern -> { name: { str_lit: $2 }, pattern: $3 }
-        | package wildcard pattern -> { name: { wildcard: true }, pattern: $3.pattern }
+obj_pat : package str_lit pattern? -> { name: { str_lit: $2 }, pattern: $3 }
+        | package wildcard pattern? -> { name: { wildcard: true }, pattern: $3.pattern }
         ;
 
 wildcard : WILDCARD %{
@@ -226,3 +221,18 @@ rparen : RPAREN %{
     console.log("rparen");
     $$ = $1;
 }%     ;
+
+lbracket : LBRACKET %{
+    console.log("lbracket");
+    $$ = $1;
+}%       ;
+
+rbracket : RBRACKET %{
+    console.log("rbracket");
+    $$ = $1;
+}%       ;
+
+alt_tok : ALT %{
+    console.log("alt");
+    $$ = $1;
+}%      ;

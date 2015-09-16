@@ -13,8 +13,8 @@ finger = "\x1f4e6"
 lparen = "\x1F31C"
 rparen = "\x1F31B"
 
-lbracket = "\x1F448"
-rbracket = "\x1F449"
+rbracket = "\x1F448"
+lbracket = "\x1F449"
 
 wildcard = "\x1F573"
 
