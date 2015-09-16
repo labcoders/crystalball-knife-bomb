@@ -178,6 +178,10 @@ prog = Program []
                                            ]
                                     )
                               ]
+               , FunctionDecl clover
+                              [ Alt []
+                                    ( Call [ Ident "len" ] )
+                              ]
                ]
 
 e = concat [ func, "test", alt, renderPattern (IntPat 0), bind, renderLiteral (IntLit 0) ]
