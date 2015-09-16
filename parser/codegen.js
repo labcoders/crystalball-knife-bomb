@@ -253,26 +253,35 @@ function FunctionDeclaration(func) {
  * The result is a list of identifiers, which must be hexified before being
  * emitted.
  */
-function determineBindings(patterns) {
+function determineBindings(patterns, depth) {
+    var d = typeof depth === 'undefined' ? 0 : depth;
+    console.log('determineBindings ' + d + ': ' + JSON.stringify(patterns));
     if(patterns.length !== 0) {
         var p = patterns[0];
-        if(p.variable)
-            return [p.variable.ident].concat(
-                determineBindings(patterns.slice(1))
+        if(p.variable) {
+            var v = p.variable.ident;
+            console.log('determineBindings ' + d + ': found variable ' + v);
+            return [v].concat(
+                determineBindings(patterns.slice(1), d + 1)
             );
+        }
         else if(p.literal) {
+            console.log('determineBindings ' + d + ': found literal');
             var l = p.literal;
             if(l.tuple)
-                return determineBindings(l.tuple);
+                return determineBindings(l.tuple, d + 1);
             else if(l.obj) {
                 var o = l.obj;
                 if(typeof o.pattern !== 'undefined')
-                    return determineBindings([o.pattern]);
+                    return determineBindings([o.pattern], d + 1);
             }
         }
     }
+    else return [];
 
-    return []; // no bindings
+    console.log('determineBindings ' + d + ': no bindings');
+
+    return determineBindings(patterns.slice(1)); // no bindings
 }
 
 /**
@@ -283,7 +292,7 @@ function determineBindings(patterns) {
 function Expression(value) {
     var o = new Output();
 
-    console.log("Emitting value: " + JSON.stringify(value, null, 2));
+    //console.log("Emitting value: " + JSON.stringify(value, null, 2));
 
     // we have a sequence of elements a, b, c, d, ...
     // we need to render a'(b')(c')(d')(...
