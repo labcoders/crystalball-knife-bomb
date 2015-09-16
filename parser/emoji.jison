@@ -62,12 +62,12 @@ decl : ffi_decl -> { ffi: $1 }
      | func_decl -> { func: $1 }
      ;
 
-func_decl : func ident alt+ -> {name: $ident, alternatives: $3}
+func_decl : func ident alt+ -> {name: $2, alternatives: $3}
           ;
 
 alt : alt_tok lambda %{
     console.log($lambda);
-    $$ = $lambda;
+    $$ = $2;
 }%  ;
 
 lambda : patterns? bind expr %{
@@ -75,7 +75,7 @@ lambda : patterns? bind expr %{
     console.log("> pattern match with " + pats.length + " arguments");
     $$ = {
         patterns: pats,
-        body: $expr
+        body: $3
     };
 }%        ;
 
