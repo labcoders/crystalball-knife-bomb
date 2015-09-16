@@ -174,6 +174,7 @@ function hexify(identifier) {
             "failed to hexify identifier `" + identifier + "`."
         );
     }
+    result = result + ' /*' + identifier + '*/';
     return result
 }
 
