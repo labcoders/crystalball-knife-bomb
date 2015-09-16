@@ -24,6 +24,13 @@ function InconsistentSyntaxTree(msg) {
     };
 }
 
+function CompilationError(msg) {
+    return {
+        name: "Compilation Error",
+        message: msg
+    };
+}
+
 function Output() {
     this.o = "";
 
@@ -60,22 +67,29 @@ function Setup() {
     // For a given invocation(params), returns the first alternative that matches
     o.emit("function findMatch(alts, params) {");
     o.emit("  for (var i=0; i<alts.length; i++) {");
-    o.emit("    if (matchEquation(alts[i].patterns, params) != null)");
-    o.emit("      return i;");
+    o.emit("    var bindings = matchEquation(alts[i].patterns, params);");
+    o.emit("    if(bindings != null);");
+    o.emit("      return { index: i, bindings: bindings };");
     o.emit("  }");
-    o.emit("  return -1;");
+    o.emit("  return null;");
+    o.emit("}");
 
     // Returns whether params match an equation's pattern list
     o.emit("function matchEquation(patterns, params) {")
     o.emit("  if(patterns.length != params.length) return null;");
 
-    o.emit("  for (var i=0; i<patterns; i++) {");
-    o.emit("    if (matchParam(patterns[i], params[i]) == null) return null;");
+    o.emit("  var bindings = [];");
 
-    o.emit("  return [];");
+    o.emit("  for (var i=0; i<patterns; i++) {");
+    o.emit("    var m = matchParam(patterns[i], params[i]);");
+    o.emit("    if (m == null) return null;");
+    o.emit("    bindings = bindings.concat(m);");
+    o.emit("  }");
+
+    o.emit("  return bindings;");
     o.emit("}");
 
-    // Returns whether a single param matches a single pattern
+    // Checks whether a given pattern matchs a value.
     o.emit("function matchParam(pat, param) {");
     o.emit("  if(pat.wildcard) return [];");
     o.emit("  if(pat.variable) return [[pat.variable.ident, param]];");
@@ -154,6 +168,12 @@ function hexify(identifier) {
         hex = identifier.charCodeAt(i).toString(16);
         result += ("000"+hex).slice(-4);
     }
+    if(result.length === 1) {
+        console.trace();
+        throw new CompilationError(
+            "failed to hexify identifier `" + identifier + "`."
+        );
+    }
     return result
 }
 
@@ -195,20 +215,61 @@ function Declaration(decl) {
 function FunctionDeclaration(func) {
     var o = new Output();
 
-    var outputAlts = func.alternatives.map(function(alt) { // Traverse values too
-        alt.body = Expression(alt.body);
-        return alt;
-        //return {patterns:alt.patterns,body:Expression(alt.body)};
-    });
+    o.emit("function " + hexify(func.name.ident) + "(params) {");
 
-    o.emit("function " + hexify(func.name) + "(params) {");
+    // Render each function body into an array
+    var fns = "var functions = [" +
+           func.alternatives.map(
+               function(alt) {
+                   return "function (" + 
+                       determineBindings(alt.patterns).map(hexify).join(', ') + 
+                       ") {" + 
+                       Expression(alt.body) + 
+                       "}";
+               }
+           ).join(',') +
+               '];';
+
+    console.log("functions: " + fns);
+    o.emit(fns);
+
     o.emit("  var alternatives = " + JSON.stringify(func.alternatives) +";");
     o.emit("  var pmatch = findMatch(alternatives, params);");
-    o.emit("  if (pmatch >= 0 && pmatch < alternatives.length)");
-    o.emit("    return alternatives[pmatch].body();");
+    o.emit("  if(pmatch != null)");
+    o.emit("    return functions[pmatch.index].apply(this, pmatch.bindings);");
+    o.emit("  else");
+    o.emit("    throw new PatternMatchError();");
     o.emit("}");
 
     return o.render();
+}
+
+/**
+ * From a list of patterns, determine the sequence of bindings that it should
+ * generate.
+ * The result is a list of identifiers, which must be hexified before being
+ * emitted.
+ */
+function determineBindings(patterns) {
+    if(patterns.length !== 0) {
+        var p = patterns[0];
+        if(p.variable)
+            return [p.variable.ident].concat(
+                determineBindings(patterns.slice(1))
+            );
+        else if(p.literal) {
+            var l = p.literal;
+            if(l.tuple)
+                return determineBindings(l.tuple);
+            else if(l.obj) {
+                var o = l.obj;
+                if(typeof o.pattern !== 'undefined')
+                    return determineBindings([o.pattern]);
+            }
+        }
+    }
+
+    return []; // no bindings
 }
 
 /**
@@ -272,13 +333,11 @@ function Expression(value) {
 function Literal(literal) {
     var o = "";
 
-    if (literal.int) {
+    if (typeof literal.int !== 'undefined') {
         o += literal.int; // Implicitly converts toString()
-    } else if (literal.bool) {
-        o += literal.bool ? "true" : "false";
-    } else if (literal.str) {
+    } else if (typeof literal.str !== 'undefined') {
         o += '"' + literal.str + '"';
-    } else if (literal.tuple) {
+    } else if (typeof literal.tuple !== 'undefined') {
         o += "[";
         var first=true;
         literal.tuple.forEach(function(value) { // For all array elements
@@ -289,14 +348,17 @@ function Literal(literal) {
             o += Expression(value);
         });
         o += "]";
-    } else if (literal.obj) {
+    } else if (typeof literal.obj !== 'undefined') {
         o += '{ name:"' + literal.obj.name + '", ' +
             'value: ' + (literal.obj.value == null ?
                 null : Expression(literal.obj.value)) + '}';
-    } else if (literal.func) {
+    } else if (typeof literal.func !== 'undefined') {
         o += emitFunctionLiteral(literal.func);
-    } else
-        console.error("literal type not matched");
+    } else {
+        throw new InconsistentSyntaxTree(
+            "unknown literal type " + JSON.stringify(literal)
+        );
+    }
 
     return o;
 }
