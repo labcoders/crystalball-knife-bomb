@@ -1,5 +1,4 @@
 var fs = require('fs'); // To import/include external files
-var jsesc = require('jsesc');
 var sourceExtension = "em"; // Used in file paths
 var compiledExtension = "js";
 
@@ -147,14 +146,6 @@ function makeFunctionName(func) {
     return func.name.ident;
 }
 
-function liftIdentifier(identifier) {
-    var lifted = jsesc(identifier, {
-      'quotes': 'single',
-      'wrap': true
-    });
-    return lifted; // Bro, do you even?
-}
-
 //stackoverflow.com/questions/21647928/javascript-unicode-string-to-hex
 function hexify(identifier) {
     var hex, i;
@@ -191,8 +182,6 @@ function Declaration(decl) {
     if (decl.func) { // Function declaration
         console.log("declaring function " + decl.func.name.ident);
         o.emit(FunctionDeclaration(decl.func));
-        o.emit("addEquation(\n'" + makeFunctionName(decl.func) + "',\n" +
-                emitFunctionLiteral(decl.func) + "\n);");
     } else if (decl.ffi) {
         o.emit("var " + decl.ffi.name.ident + " = " + decl.ffi.externalName + ";");
     } else {
@@ -210,9 +199,9 @@ function FunctionDeclaration(func) {
         alt.body = Expression(alt.body);
         return alt;
         //return {patterns:alt.patterns,body:Expression(alt.body)};
-    }
+    });
 
-    o.emit("function func_" + hexify(func.name) + "(params) {");
+    o.emit("function " + hexify(func.name) + "(params) {");
     o.emit("  var alternatives = " + JSON.stringify(func.alternatives) +";");
     o.emit("  var pmatch = findMatch(alternatives, params);");
     o.emit("  if (pmatch >= 0 && pmatch < alternatives.length)");
@@ -265,7 +254,7 @@ function Expression(value) {
     else { // then the value is an identifier or a literal
         o.emitRaw("(function() { return ");
         if(typeof value.literal !== 'undefined') {
-            o.emitRaw(Literal(value.literal);
+            o.emitRaw(Literal(value.literal));
         }
         else if(typeof value.variable !== 'undefined') {
             o.emitRaw(hexify(value.variable.ident));

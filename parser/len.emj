@@ -1,1 +1,1 @@
-🏴len📏🌜📦✌Nil✌🕳🌛⬁📦✌Zero✌🏴len📏🌜📦✌Cons✌👉🕳☝xs👈🌛⬁📦✌Succ✌len📏xs🏴🍀⬁len📏📦✌Cons✌👉2⃣!☝📦✌Cons✌👉4⃣!☝📦✌Cons✌👉6⃣!☝📦✌Cons✌📦✌Nil✌👈👈👈
+🏴len↪️🌜📦✌Nil✌🕳🌛⬁0⃣!↪️🌜📦✌Cons✌👈🕳☝xs👉🌛⬁🌜add🌛🌜1⃣!🌛🌜🌜len🌛🌜xs🌛🌛

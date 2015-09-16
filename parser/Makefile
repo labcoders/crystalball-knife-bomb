@@ -1,3 +1,6 @@
+JISON = jison
+CBKB = node emoji-cli.js
+
 .PHONY: all
 all: emoji.js
 
@@ -5,8 +8,13 @@ all: emoji.js
 dependencies:
 	npm install
 
-# Edit this to a path including node_modules if jison is installed locally
-JISON = node node_modules/jison/lib/jison.js
-
+# Rule to compile the CBKB parser
 emoji.js: emoji.jison
 	$(JISON) emoji.jison
+
+.PHONY: emoji-cli.js
+emoji-cli.js: emoji.js codegen.js
+
+# General rule for compiling CBKB programs.
+%.emj.js: %.emj emoji-cli.js
+	$(CBKB) $<
