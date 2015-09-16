@@ -222,16 +222,18 @@ function FunctionDeclaration(func) {
     var fns = "var functions = [" +
            func.alternatives.map(
                function(alt) {
-                   return "function (" + 
-                       determineBindings(alt.patterns).map(hexify).join(', ') + 
-                       ") {" + 
-                       Expression(alt.body) + 
+                   var bs = determineBindings(alt.patterns);
+                   console.log("determined bindings: " + JSON.stringify(bs));
+                   return "function (" +
+                       bs.map(hexify).join(', ') +
+                       ") {" +
+                       Expression(alt.body) +
                        "}";
                }
            ).join(',') +
                '];';
 
-    console.log("functions: " + fns);
+    //console.log("functions: " + fns);
     o.emit(fns);
 
     o.emit("  var alternatives = " + JSON.stringify(func.alternatives) +";");
