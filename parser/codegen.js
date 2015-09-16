@@ -136,7 +136,7 @@ function Program(program) {
     program.declarations.forEach(function(decl) {
         o.emit(Declaration(decl));
     });
-    o.emit("dispatchEquation('" + emojiLiterals.FOUR_LEAF_CLOVER + "', []);");
+    o.emit(hexify(emojiLiterals.FOUR_LEAF_CLOVER) + "([]);");
     return o.render();
 }
 
