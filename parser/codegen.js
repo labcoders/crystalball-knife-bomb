@@ -149,9 +149,9 @@ function makeFunctionName(func) {
 //stackoverflow.com/questions/21647928/javascript-unicode-string-to-hex
 function hexify(identifier) {
     var hex, i;
-    var result = "";
-    for (i=0; i<this.length; i++) {
-        hex = this.charCodeAt(i).toString(16);
+    var result = "$";
+    for (i=0; i<identifier.length; i++) {
+        hex = identifier.charCodeAt(i).toString(16);
         result += ("000"+hex).slice(-4);
     }
     return result
