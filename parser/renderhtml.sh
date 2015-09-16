@@ -32,7 +32,7 @@ window.onload = function() {
 <body>
 <p id='main'>
 EOF1
-$(recode < $1 UTF-8..UTF-8)
+$(cat $1)
 EOF2
 </p>
 </body>
