@@ -59,7 +59,7 @@ function Setup() {
 
     // For a given invocation(params), returns the first alternative that matches
     o.emit("function findMatch(alts, params) {");
-    o.emit("  for (int i=0; i<alts.length; i++) {");
+    o.emit("  for (var i=0; i<alts.length; i++) {");
     o.emit("    if (matchEquation(alts[i].patterns, params) != null)");
     o.emit("      return i;");
     o.emit("  }");
@@ -69,7 +69,7 @@ function Setup() {
     o.emit("function matchEquation(patterns, params) {")
     o.emit("  if(patterns.length != params.length) return null;");
 
-    o.emit("  for (int i=0; i<patterns; i++) {");
+    o.emit("  for (var i=0; i<patterns; i++) {");
     o.emit("    if (matchParam(patterns[i], params[i]) == null) return null;");
 
     o.emit("  return [];");
