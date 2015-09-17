@@ -1,21 +1,28 @@
-<html ng-app="myApp">
+<html>
 <head>
 <title>Emoji Editor</title>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
 <script src="//www.parsecdn.com/js/parse-1.6.0.min.js"></script>
+
 <script src="//cdn.jsdelivr.net/emojione/1.5.0/lib/js/emojione.min.js"></script>
 <link rel="stylesheet" href="//cdn.jsdelivr.net/emojione/1.5.0/assets/css/emojione.min.css" />
+
+<script src="lib/codemirror.js"></script>
+<link rel="stylesheet" href="lib/codemirror.css">
+<script src="mode/javascript/javascript.js"></script>
+
 <link rel="stylesheet" href="style.css" />
 </head>
-<body ng-controller="emojiController">
+<body>
 
-<div ng-bind="source" id="source" contentEditable="true"></div>
-<button ng-click="toImage()">Convert to Images</button>
-<button ng-click="toUnicode()">Convert to Unicode</button>
-<button ng-click="save()">Save to Cloud</button>
-<button ng-click="source=''">Clear</button>
+<!--
+<div id="source" contentEditable="true"></div>-->
+<button onclick="toImage()">Convert to Images</button>
+<button onclick="toUnicode()">Convert to Unicode</button>
+<button onclick="save()">Save to Cloud</button>
+<button onclick="source=''">Clear</button>
 
-<script type="text/javascript" src="emojiController.js"></script>
+<script type="text/javascript" src="editor.js"></script>
 </body>
 </html>
