@@ -69,6 +69,7 @@ function Setup() {
     // For a given invocation(params), returns the first alternative that matches
     o.emit("function findMatch(alts, params) {");
     o.emit("  for (var i=0; i<alts.length; i++) {");
+    o.emit("    console.log('matching params ' + JSON.stringify(params) + ' to pattern ' + JSON.stringify(alts[i]));");
     o.emit("    var bindings = matchEquation(alts[i], params);");
     o.emit("    if(bindings != null) {");
     o.emit("      console.log('matched equation ' + i);");
@@ -84,7 +85,8 @@ function Setup() {
 
     o.emit("  var bindings = [];");
 
-    o.emit("  for (var i=0; i<patterns; i++) {");
+    o.emit("  for (var i=0; i<patterns.length; i++) {");
+    o.emit("    console.log('matching param ' + JSON.stringify(params[i]) + ' to pattern ' + JSON.stringify(patterns[i]));");
     o.emit("    var m = matchParam(patterns[i], params[i]);");
     o.emit("    if (m == null) return null;");
     o.emit("    bindings = bindings.concat(m);");
@@ -309,8 +311,6 @@ function FunctionDeclaration(func) {
     var alternatives = JSON.stringify(func.alternatives.map(function(alt) {
         return alt.patterns;
     }));
-
-    console.log('alternatives: ' + alternatives);
 
     o.emit("  var alternatives = " + alternatives +";");
     o.emit("  var pmatch = findMatch(alternatives, params);");
