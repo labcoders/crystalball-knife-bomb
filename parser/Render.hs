@@ -4,11 +4,13 @@
 
 import qualified Control.Monad.Writer as W
 import           Data.List            ( intercalate )
+import           Data.Maybe           ( fromMaybe )
 
 sep = "\x1F4CF"
 asep = "\x261D"
 bind = "\x2b01"
 finger = "\x1f4e6"
+ffi = "\x2623"
 
 lparen = "\x1F31C"
 rparen = "\x1F31B"
@@ -65,7 +67,7 @@ data Expr = Call [Expr]
 data Literal = IntLit Int
              | StringLit String
              | ArrayLit [Expr]
-             | ObjectLit Literal Expr
+             | ObjectLit Literal (Maybe Expr)
              | FunctionLit Alt
 
 data Pattern = Wildcard
@@ -110,7 +112,7 @@ renderString s = quote ++ s ++ quote
 renderLiteral (IntLit i) = renderInteger i
 renderLiteral (StringLit s) = renderString s
 renderLiteral (ArrayLit es) = surroundBracket $ intercalate asep $ map renderExpr es
-renderLiteral (ObjectLit l e) = surroundParen $ finger ++ renderLiteral l ++ renderExpr e
+renderLiteral (ObjectLit l e) = surroundParen $ finger ++ renderLiteral l ++ maybe "" renderExpr e
 renderLiteral (FunctionLit a) = surroundParen $ lambda ++ renderAlt a
 
 renderAlt (Alt ps e) = concat [ alt
@@ -123,6 +125,10 @@ renderDecl (FunctionDecl i as) = concat [ func
                                         , renderIdent i
                                         , concatMap renderAlt as
                                         ]
+renderDecl (FfiDecl i l) = concat [ ffi
+                                  , renderIdent i
+                                  , renderLiteral l
+                                  ]
 
 surroundParen :: String -> String
 surroundParen s = lparen ++ s ++ rparen
@@ -158,8 +164,9 @@ int n = concat (zipWith f (show n) (repeat '\x20E3')) ++ "!"
 
 call args = intercalate sep args
 
-prog = Program []
-               [ FunctionDecl "len"
+prog = Program [ Include (StringLit "arith.js") ]
+               [ FfiDecl "add" (StringLit "add")
+               , FunctionDecl "len"
                               [ Alt [ ObjectPat ( StringPat "Nil" )
                                                 Wildcard
                                     ]
@@ -180,11 +187,51 @@ prog = Program []
                               ]
                , FunctionDecl clover
                               [ Alt []
-                                    ( Call [ Ident "len" ] )
+                                    ( Call [ Ident "len" 
+                                           , Literal list
+                                           ] )
                               ]
                ]
 
-e = concat [ func, "test", alt, renderPattern (IntPat 0), bind, renderLiteral (IntLit 0) ]
+prog2 = Program [ Include (StringLit "arith.js") ]
+                [ FfiDecl "add" (StringLit "add")
+                , FunctionDecl clover
+                               [ Alt []
+                                     ( Call [ Ident "add"
+                                            , Literal (IntLit 5)
+                                            , Literal (IntLit 7)
+                                            ]
+                                     )
+                               ]
+                ]
+
+list = ObjectLit ( StringLit "Cons" )
+                 ( Just $
+                   Literal $
+                   ArrayLit [ Literal ( IntLit 1 )
+                            , Literal ( ObjectLit ( StringLit "Cons" )
+                                                  ( Just $
+                                                    Literal $
+                                                    ArrayLit [ Literal (IntLit 1)
+                                                             , Literal ( ObjectLit ( StringLit "Cons" )
+                                                                                   ( Just $ 
+                                                                                     Literal $
+                                                                                     ArrayLit [ Literal (IntLit 1)
+                                                                                              , Literal ( ObjectLit (StringLit "Nil")
+                                                                                                                    Nothing
+                                                                                                        )
+                                                                                              ]
+                                                                                   )
+                                                                       )
+                                                             ]
+                                                  )
+                                      )
+                            ]
+                 )
+
+e = concat [ func, "test"
+           , alt, renderPattern (IntPat 0), bind, renderLiteral (IntLit 0)
+           ]
 
 main = putStrLn $ renderProgram prog
 --main = putStrLn e

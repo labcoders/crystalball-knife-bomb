@@ -1,6 +1,8 @@
+var jison = require('jison');
 var fs = require('fs'); // To import/include external files
-var sourceExtension = "em"; // Used in file paths
-var compiledExtension = "js";
+
+var grammar = fs.readFileSync('emoji.jison', 'utf8');
+var parser = new jison.Parser(grammar);
 
 var emojiLiterals = {};
 
@@ -67,9 +69,11 @@ function Setup() {
     // For a given invocation(params), returns the first alternative that matches
     o.emit("function findMatch(alts, params) {");
     o.emit("  for (var i=0; i<alts.length; i++) {");
-    o.emit("    var bindings = matchEquation(alts[i].patterns, params);");
-    o.emit("    if(bindings != null);");
+    o.emit("    var bindings = matchEquation(alts[i], params);");
+    o.emit("    if(bindings != null) {");
+    o.emit("      console.log('matched equation ' + i);");
     o.emit("      return { index: i, bindings: bindings };");
+    o.emit("    }");
     o.emit("  }");
     o.emit("  return null;");
     o.emit("}");
@@ -91,13 +95,35 @@ function Setup() {
 
     // Checks whether a given pattern matchs a value.
     o.emit("function matchParam(pat, param) {");
-    o.emit("  if(pat.wildcard) return [];");
-    o.emit("  if(pat.variable) return [[pat.variable.ident, param]];");
+    o.emit("  console.log('matching param');");
+
+    o.emit("  if(pat.wildcard) {");
+    o.emit("    console.log('matched wildcard');");
+    o.emit("    return [];");
+    o.emit("  }");
+
+    o.emit("  if(pat.variable) {");
+    o.emit("    console.log('matched variable');");
+    o.emit("    return [[pat.variable.ident, param]];");
+    o.emit("  }");
 
     o.emit("  if(pat.literal) {");
-    o.emit("    if(pat.literal.bool === param) return [];");
-    o.emit("    if(pat.literal.int === param) return [];");
-    o.emit("    if(pat.literal.str === param) return [];");
+    o.emit("    console.log('matching literal');");
+
+    o.emit("    if(pat.literal.bool === param) {");
+    o.emit("      console.log('matched bool');");
+    o.emit("      return [];");
+    o.emit("    }");
+
+    o.emit("    if(pat.literal.int === param) {");
+    o.emit("      console.log('matched int');");
+    o.emit("      return [];");
+    o.emit("    }");
+
+    o.emit("    if(pat.literal.str === param) {");
+    o.emit("      console.log('matched str');");
+    o.emit("      return [];");
+    o.emit("    }");
 
     o.emit("    if(typeof pat.literal.array_pat !== 'undefined') {");
 
@@ -115,6 +141,8 @@ function Setup() {
     o.emit("      for(var i = 0; i < pat.literal.tuple.length; i++)");
     o.emit("        bindings = bindings.concat(")
     o.emit("            matchParam(pat.literal.tuple[i], param[i]));");
+
+    o.emit("      console.log('matched array');");
     o.emit("      return bindings;");
 
     o.emit("    }");
@@ -124,9 +152,11 @@ function Setup() {
     o.emit("        console.log('object type match failed');");
     o.emit("        return null;");
     o.emit("      }");
-    o.emit("      if(!pat.literal.obj_pat.name.wildcard && ( pat.literal.obj_pat.name.str_lit !== param.name || param.value == null ) )");
+    o.emit("      if(!pat.literal.obj_pat.name.wildcard && ( pat.literal.obj_pat.name.str_lit !== param.name || param.value == null ) ) {");
     o.emit("        console.log('object pattern value match failed');");
     o.emit("        return null;");
+    o.emit("      }");
+    o.emit("      console.log('matched object head');");
     o.emit("      return matchParam(pat.literal.obj_pat.pattern, param.value);");
     o.emit("    }");
 
@@ -143,15 +173,52 @@ function Program(program) {
     var o = new Output();
     o.emit(Setup());
 
-    program.statements.forEach(function(stmt) {
-        o.emit(Declaration(stmt));
-    });
+    var ir = preprocess(program);
+
+    o.emit(ir.include);
 
     program.declarations.forEach(function(decl) {
         o.emit(Declaration(decl));
     });
-    o.emit(hexify(emojiLiterals.FOUR_LEAF_CLOVER) + "([]);");
+
+    o.emit("console.log(" + hexify(emojiLiterals.FOUR_LEAF_CLOVER) + "([]));");
+
     return o.render();
+}
+
+/**
+ * Produces a list of all declarations in a program prepended to the list of
+ * all imported declarations as well as a string which is the concatenation of
+ * all transitively textually included files.
+ */
+function preprocess(program) {
+    var decls = [];
+    var include = "";
+
+    program.statements.forEach(function(stmt) {
+        if(stmt.import) {
+            var filename = stmt.import;
+            var text = fs.readFileSync(filename, 'utf8');
+            var program_ = parser.parse(text);
+
+            var rec = preprocess(program_)
+            include = include + rec.include;
+            rec.decls.forEach(function(decl) {
+                decls.push(decl);
+            });
+        }
+        else if(stmt.include) {
+            var filename = stmt.include;
+            var text = fs.readFileSync(filename, 'utf8');
+            include = include + '\n' + text;
+        }
+        else
+            throw new InconsistentSyntaxTree(
+                "unknown statement type: " + JSON.stringify(stmt)
+            );
+    });
+
+    return { decls: decls.concat(program.declarations), include: include };
 }
 
 function makeFunctionName(func) {
@@ -182,10 +249,7 @@ function Statement(stmt) {
     var o = new Output();
 
     if (stmt.include) {
-        var filename = stmt.include.source ? stmt.include.source.ident + "." + sourceExtension : stmt.include.compiled + "." + compiledExtension;
 
-        var data = fs.readFileSync(filename, 'utf8');
-        o.emit(data);
     } else if (stmt.import) {
         var name = stmt.import.source ? stmt.import.source.ident : stmt.import.compiled;
         o.emit('var ' + name + ' = require("./' + name + '");'); // Require the file
@@ -204,7 +268,9 @@ function Declaration(decl) {
         console.log("declaring function " + decl.func.name.ident);
         o.emit(FunctionDeclaration(decl.func));
     } else if (decl.ffi) {
-        o.emit("var " + decl.ffi.name.ident + " = " + decl.ffi.externalName + ";");
+        o.emit("function " + hexify(decl.ffi.name.ident) + "(params) {");
+        o.emit("  return " + decl.ffi.externalName + ".apply(this, params);");
+        o.emit("};");
     } else {
         console.error("declaration type not matched: " + JSON.stringify(decl));
         throw new Error("unmatched declaration");
@@ -214,29 +280,39 @@ function Declaration(decl) {
 }
 
 function FunctionDeclaration(func) {
+    var name = func.name.ident;
     var o = new Output();
 
-    o.emit("function " + hexify(func.name.ident) + "(params) {");
+    console.log('emitting function ' + name);
+
+    o.emit("function " + hexify(name) + "(params) {");
+
+    o.emit("console.log('invoking function " + name + ".');");
+
+    var equations = func.alternatives.map(
+        function(alt) {
+            var bs = determineBindings(alt.patterns);
+            return "function (" +
+                bs.map(hexify).join(', ') +
+                ") {" +
+                "return " + Expression(alt.body) +
+                "}";
+        }
+    ).join(',');
 
     // Render each function body into an array
-    var fns = "var functions = [" +
-           func.alternatives.map(
-               function(alt) {
-                   var bs = determineBindings(alt.patterns);
-                   console.log("determined bindings: " + JSON.stringify(bs));
-                   return "function (" +
-                       bs.map(hexify).join(', ') +
-                       ") {" +
-                       Expression(alt.body) +
-                       "}";
-               }
-           ).join(',') +
-               '];';
+    var fns = "var functions = [" + equations + '];';
 
     //console.log("functions: " + fns);
     o.emit(fns);
 
-    o.emit("  var alternatives = " + JSON.stringify(func.alternatives) +";");
+    var alternatives = JSON.stringify(func.alternatives.map(function(alt) {
+        return alt.patterns;
+    }));
+
+    console.log('alternatives: ' + alternatives);
+
+    o.emit("  var alternatives = " + alternatives +";");
     o.emit("  var pmatch = findMatch(alternatives, params);");
     o.emit("  if(pmatch != null)");
     o.emit("    return functions[pmatch.index].apply(this, pmatch.bindings);");
@@ -292,40 +368,23 @@ function determineBindings(patterns, depth) {
 function Expression(value) {
     var o = new Output();
 
-    //console.log("Emitting value: " + JSON.stringify(value, null, 2));
-
-    // we have a sequence of elements a, b, c, d, ...
-    // we need to render a'(b')(c')(d')(...
-    // but actually no because we don't have currying support!
-    // so we need to render a'([b', c', d', ...])
-    // but actually no because a' will not necessarily be the name of the
-    // function *in javascript*. We have to use the resolver on a'
-    // so we have:
-    //     var f = resolver.resolve(a');
-    //     return f([b', c', d', ...]);
-
     if(value instanceof Array) {
         if(value.length === 0)
             throw new InconsistentSyntaxTree("empty value production");
+        else if(value.length === 1)
+            return Expression(value[0])
 
         var head = value[0];
 
-        o.emit("(function() {");
-        o.emit("var head = " + Expression(head) + ";");
-        o.emit("return head(["); // begin call to head
-
-        o.emit( // render argument list
-                value.slice(1).map(function(b) {
-                    var b_ = Expression(b);
-                    return b_;
-                }).join(',')
+        o.emit("(" + Expression(head) + ")([" + 
+               value.slice(1).map(function(b) {
+                   var b_ = Expression(b);
+                   return b_;
+               }).join(', ') +
+                   "])"
         );
-
-        o.emit("]);"); // end call to head
-        o.emit("})");
     }
     else { // then the value is an identifier or a literal
-        o.emitRaw("(function() { return ");
         if(typeof value.literal !== 'undefined') {
             o.emitRaw(Literal(value.literal));
         }
@@ -336,7 +395,6 @@ function Expression(value) {
             throw new InconsistentSyntaxTree("unrecognized value node: " +
                     JSON.stringify(value));
         }
-        o.emit(";})");
     }
 
     return o.render();

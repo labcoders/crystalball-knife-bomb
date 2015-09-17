@@ -10,7 +10,7 @@
 
 "!"                   return 'END_NUMBER';
 
-"\uD83D\uDC89"        return 'INCLUDE'; /* black phone, include library into generated source */
+"\uD83D\uDC89"        return 'INCLUDE'; /* syringe */
 "\uD83C\uDF81"        return 'IMPORT' /* gift, reference to an external library */
 "\u2623"              return 'EXTERN' /*radioactive symbol */
 "\uD83C\uDFF4"        return 'FUNC'; /* waving black flag */
@@ -94,19 +94,17 @@ func : FUNC %{
     $$ = $1;
 }%   ;
 
-import_stmt : IMPORT ident -> { source: $2 } /* import an emoji source file */
-            | IMPORT str_lit -> { compiled: $2 } /* import a JS file */
+import_stmt : IMPORT ident -> $2 /* import an emoji source file */
             ;
 
-include_stmt : INCLUDE ident -> { source: $2 } /* include an emoji source file */
-             | INCLUDE str_lit -> { compiled: $2 } /* include a JS file */
+include_stmt : INCLUDE str_lit -> $2 /* include a JS file */
              ;
 
 ffi_decl : EXTERN ident str_lit -> { name: $2, externalName: $3 }
          ;
 
-expr : lparen expr rparen expr?  %{
-    $$ = typeof $4 === 'undefined' ? [$2] : [$2, $4];
+expr : lparen expr rparen expr? %{
+    $$ = typeof $4 === 'undefined' ? [$2] : [$2].concat($4);
 }%
      | ident sep expr -> [{variable: $1}].concat($3)
      | ident -> [{variable: $1}]
@@ -150,11 +148,11 @@ array_lit : LBRACKET RBRACKET -> []
           | LBRACKET array_content RBRACKET -> $2
           ;
 
-array_content : value -> [$1]
-              | value ASEP array_content -> [$1].concat($3)
+array_content : expr -> [$1]
+              | expr ASEP array_content -> [$1].concat($3)
               ;
 
-obj_lit : package str_lit value? %{ 
+obj_lit : package str_lit expr? %{ 
     $$ = { 
         name: $2, 
         value: typeof $3 === 'undefined' ? null : $3
