@@ -21,19 +21,34 @@ function raise(e) {
     throw e;
 }
 
+/**
+ * The type of errors that result from an invalid syntax tree.
+ *
+ * For example, a syntax tree can be invalid if it contains nodes with
+ * unexpected names
+ */
 function InconsistentSyntaxTree(msg) {
-    return {
-        name: "Inconsistent Syntax Tree",
-        message: msg
-    };
+    this.message = msg;
+    Error.captureStackTrace(this, this.constructor);
 }
 
+InconsistentSyntaxTree.prototype.__proto__ = Error.prototype;
+InconsistentSyntaxTree.prototype.name = "InconsistentSyntaxTree";
+
+/**
+ * The type of general compilation errors that do not result from invalid
+ * syntax trees.
+ *
+ * More specific object types should be used for more particular kinds of
+ * failures, e.g. type errors or name errors.
+ */
 function CompilationError(msg) {
-    return {
-        name: "Compilation Error",
-        message: msg
-    };
+    this.message = msg
+    Error.captureStackTrace(this, this.constructor);
 }
+
+CompilationError.prototype.__proto__ = Error.prototype;
+CompilationError.prototype.name = "CompilationError";
 
 function repeat(n, s) {
     var s_ = "";
