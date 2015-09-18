@@ -252,7 +252,7 @@ function Setup() {
     o.emit("      return [];");
     o.emit("    }");
 
-    o.emit("    if(typeof pat.literal.array_pat !== 'undefined') {");
+    o.emit("    if(typeof pat.literal.array !== 'undefined') {");
 
     o.emit("      if(param instanceof Array) {");
     o.emit("        console.log('array type match failed');");
@@ -274,17 +274,17 @@ function Setup() {
 
     o.emit("    }");
 
-    o.emit("    if(typeof pat.literal.obj_pat !== 'undefined') {");
+    o.emit("    if(typeof pat.literal.obj !== 'undefined') {");
     o.emit("      if(typeof param !== 'object') {");
     o.emit("        console.log('object type match failed');");
     o.emit("        return null;");
     o.emit("      }");
-    o.emit("      if(!pat.literal.obj_pat.name.wildcard && ( pat.literal.obj_pat.name.str_lit !== param.name || param.value == null ) ) {");
+    o.emit("      if(!pat.literal.obj.name.wildcard && ( pat.literal.obj.name.str_lit !== param.name || param.value == null ) ) {");
     o.emit("        console.log('object pattern value match failed');");
     o.emit("        return null;");
     o.emit("      }");
     o.emit("      console.log('matched object head');");
-    o.emit("      return matchParam(pat.literal.obj_pat.pattern, param.value);");
+    o.emit("      return matchParam(pat.literal.obj.pattern, param.value);");
     o.emit("    }");
 
     o.emit("  }");
