@@ -4,6 +4,8 @@ var fs = require('fs'); // To import/include external files
 var grammar = fs.readFileSync('emoji.jison', 'utf8');
 var parser = new jison.Parser(grammar);
 
+var INDENT = '  ';
+
 var emojiLiterals = {};
 
 emojiLiterals.FOUR_LEAF_CLOVER = "🍀";
@@ -33,17 +35,125 @@ function CompilationError(msg) {
     };
 }
 
-function Output() {
+function repeat(n, s) {
+    var s_ = "";
+    for(var i = 0; i < n; i++) {
+        s_ += s;
+    }
+    return s;
+}
+
+/**
+ * Unnecessarily fancy interface for concatenating strings.
+ */
+function Output(level) {
+    this.level = typeof level === 'undefined' ? 0 : level;
     this.o = "";
 
-    this.emitRaw = function(s) {
-        this.o = this.o + s;
+    /**
+     * Return a new Output object whose indentation level is greater than the
+     * current one.
+     *
+     * Note: once the new Output object has been filled with data, it should be
+     * embedded back within this object with the {@link embed} method.
+     *
+     * @param {int} [amount] -- If given, the amount by which the inner Output
+     * should be indented by. The default value is one.
+     */
+    this.createInner = function(amount) {
+        return new Output(this.level + 1);
+    }
+
+    /**
+     * Embed another Output object within this one.
+     */
+    this.embed = function(inner) {
+        this.emitRaw(inner.render());
+    }
+
+    /**
+     * Simply appends each given argument in turn to the output.
+     */
+    this.emitRaw = function() {
+        for(var i = 0; i < arguments.length; i++)
+            this.o += arguments[i];
     };
 
-    this.emit = function(s) {
-        this.o = this.o + s + '\n';
+    /**
+     * Appends a new line to the output.
+     * Specifically, INDENT is appended _level_ times, followed by the given
+     * string, followed by a newline character.
+     */
+    this.emitLine = function(s) {
+        this.emitIndented(s + '\n');
     };
 
+    /**
+     * Appends an indented string to the output.
+     */
+    this.emitIndented = function(s) {
+        this.emitRaw(repeat(this.level, INDENT) + s);
+    }
+
+    /**
+     * Emits a function declaration, correctly increasing the indentation level
+     * of the body.
+     *
+     * @param {string} name -- The name of the function to emit. If falsy, the
+     * emitted function is anonymous.
+     * @param {array} argNames -- The names of the arguments to the function.
+     * If falsy, the emitted function takes no arguments.
+     * @param {array} bodyLines -- If an array, each element is emitted as a
+     * correctly indented line as the body.
+     * @param {int} [indentAmount] -- If given, overrides the default value of
+     * 1 for the amount of indents to use for the function body.
+     */
+    this.emitFunction = function(name, argNames, bodyLines, indentAmount) {
+        var indentAmount = typeof indentAmount === 'undefined' ? 1 : indentAmount;
+        var args = argNames ?
+        var argString = argNames ? argNames.join(', ') : '';
+        this.emitLine(
+            'function ' + (name ? name : '') + '(' + argString + ') {'
+        );
+        var body = new Output(this.level + indentAmount);
+        bodyLines.forEach(function(line) {
+            body.emitLine(line);
+        });
+        this.emitRaw(body.render());
+        this.emitLine('}');
+    }
+
+    /**
+     * Emits a single variable declaration.
+     */
+    this.emitVar(name, value) {
+        this.emitLine('var ' + name + ' = ' + value + ';');
+    }
+
+    /**
+     * Emits multiple variable declarations sequentially.
+     *
+     * This function accepts arbitrarily many arguments. Each argument must be
+     * an array of two elements: the first is the name of the variable, the
+     * second is the value.
+     */
+    this.emitVars() {
+        this.emitIndented('var ' + arguments[0][0] + ' = ' + arguments[0][1]);
+        for(var i = 1; i < arguments.length; i++) {
+            this.emitRaw(','); // append comma to previous declaration
+            this.emitIndented('    ' + arguments[i][0] + ' = ' + arguments[i][1]);
+        }
+        this.emitRaw(';'); // terminate declaration
+    }
+
+    /**
+     * A synonym for {@link emitLine}.
+     */
+    this.emit = this.emitLine;
+
+    /**
+     * Return the output as a string.
+     */
     this.render = function() {
         return this.o;
     };
