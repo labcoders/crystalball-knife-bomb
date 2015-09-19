@@ -1,7 +1,7 @@
 
 var Program; // Parse.com class model
 var emojiDB; // Emoji mapping to images
-var myCodeMirror;
+var ckEditor;
 
 
 $(document).ready(function() {
@@ -9,11 +9,9 @@ $(document).ready(function() {
 		loadProgram();
 	window.addEventListener("hashchange", loadProgram);
 
-	myCodeMirror = CodeMirror(document.body, {
-		mode:  "javascript",
-		/*specialChars: /([\u2600-\u27FF])|([\uD83C-\uD83D][\uDDFF-\uDF00])|(\uD83D[\uDE00-\uDE4F])|(\uD83D[\uDE80-\uDEC5])/,*/
-		specialChars: new RegExp(emojione.unicodeRegexp),
-		specialCharPlaceholder: function(text){return $('<span class="special" style="min-width:15px;min-height:15px;background-image:url\''+$(emojione.toImage(text)).attr("src")+'\')"></span>')[0]}
+	ckEditor = $("#source").ckeditor({
+		uiColor: '#9AB8F3',
+		customConfig: ''
 	});
 
 	Parse.initialize("rRc5MWWI4vyZEeshbvZFA1Nz4jKP6UCrgILPXQG3", "yPXq3zWBjYJpoOFsZWDisXYXdKxv6fblQdIMw5Nn");
