@@ -55,15 +55,16 @@ function repeat(n, s) {
     for(var i = 0; i < n; i++) {
         s_ += s;
     }
-    return s;
+    return s_;
 }
 
 /**
  * Unnecessarily fancy interface for concatenating strings.
  */
-function Output(level) {
-    this.level = typeof level === 'undefined' ? 0 : level;
+function Output(indentLevel, parent) {
+    this.level = typeof indentLevel === 'undefined' ? 0 : indentLevel;
     this.o = "";
+    this.parent = typeof parent === 'undefined' ? null : parent;
 
     /**
      * Return a new Output object whose indentation level is greater than the
@@ -76,23 +77,39 @@ function Output(level) {
      * should be indented by. The default value is one.
      */
     this.createInner = function(amount) {
-        return new Output(this.level + 1);
+        var indent = typeof amount === 'undefined' ? 1 : amount;
+        console.log('nesting to indent ' + (this.level + indent));
+        return new Output(this.level + indent, this);
+    }
+
+    this.pop = function() {
+        return this.parent.embed(this);
     }
 
     /**
      * Embed another Output object within this one.
      */
     this.embed = function(inner) {
-        this.emitRaw(inner.render());
+        return this.emitRaw(inner.render());;
     }
 
     /**
      * Simply appends each given argument in turn to the output.
      */
     this.emitRaw = function() {
-        for(var i = 0; i < arguments.length; i++)
+        for(var i = 0; i < arguments.length; i++) {
+            process.stdout.write(arguments[i]);
             this.o += arguments[i];
+        }
+        return this;
     };
+
+    /**
+     * Appends an indented string to the output.
+     */
+    this.emitIndented = function(s) {
+        return this.emitRaw(repeat(this.level, INDENT) + s);
+    }
 
     /**
      * Appends a new line to the output.
@@ -100,49 +117,85 @@ function Output(level) {
      * string, followed by a newline character.
      */
     this.emitLine = function(s) {
-        this.emitIndented(s + '\n');
+        return this.emitIndented(s + '\n');
     };
 
     /**
-     * Appends an indented string to the output.
+     * Appends a statement as a line to the output.
+     * Specifically, a semicolon is inserted prior to the newline.
      */
-    this.emitIndented = function(s) {
-        this.emitRaw(repeat(this.level, INDENT) + s);
+    this.emitStmt = function(s) {
+        return this.emitLine(s + ';');
     }
 
     /**
-     * Emits a function declaration, correctly increasing the indentation level
-     * of the body.
-     *
-     * @param {string} name -- The name of the function to emit. If falsy, the
-     * emitted function is anonymous.
-     * @param {array} argNames -- The names of the arguments to the function.
-     * If falsy, the emitted function takes no arguments.
-     * @param {array} bodyLines -- If an array, each element is emitted as a
-     * correctly indented line as the body.
-     * @param {int} [indentAmount] -- If given, overrides the default value of
-     * 1 for the amount of indents to use for the function body.
+     * Emits a return statement of a given expression.
      */
-    this.emitFunction = function(name, argNames, bodyLines, indentAmount) {
+    this.emitReturn = function(s) {
+        return this.emitStmt('return ' + s);
+    }
+
+    this.pushFor = function(stmts) {
+        this.emitLine('for(' + stmts.join(';') + ') {');
+
+        var p = this.createInner();
+        p.pop = function() {
+            var r = this.parent.embed(p).emitLine('}');
+            console.error('pop to ' + p.level + ' -> ' + this.parent.level);
+            return r;
+        };
+        return p;
+    }
+
+    this.pushIf = function(cond) {
+        this.emitLine('if(' + cond + ') {');
+
+        var p = this.createInner();
+        p.pop = function() {
+            var r = this.parent.embed(p).emitLine('}');
+            console.error('pop to ' + p.level + ' -> ' + this.parent.level);
+            return r;
+        };
+        return p;
+    }
+
+    this.pushFunction = function(name, argNames, indentAmount) {
         var indentAmount = typeof indentAmount === 'undefined' ? 1 : indentAmount;
-        var args = argNames ?
         var argString = argNames ? argNames.join(', ') : '';
         this.emitLine(
             'function ' + (name ? name : '') + '(' + argString + ') {'
         );
-        var body = new Output(this.level + indentAmount);
-        bodyLines.forEach(function(line) {
-            body.emitLine(line);
-        });
-        this.emitRaw(body.render());
-        this.emitLine('}');
+
+        var p = this.createInner();
+        p.pop = function() {
+            var r = this.parent.embed(p).emitLine('}');
+            console.error('pop to ' + p.level + ' -> ' + this.parent.level);
+            return r;
+        };
+
+        return p;
+    }
+
+    /**
+     * Return an inner Output object augmented with a pop method allowing to
+     * return to the current Output object. When the inner Output object is
+     * popped, it is embedded in its parent.
+     */
+    this.push = function(amount) {
+        var p = this.createInner();
+        p.pop = function() {
+            var r = this.parent.embed(p);
+            console.error('pop to ' + p.level + ' -> ' + this.parent.level);
+            return r;
+        };
+        return p;
     }
 
     /**
      * Emits a single variable declaration.
      */
-    this.emitVar(name, value) {
-        this.emitLine('var ' + name + ' = ' + value + ';');
+    this.emitVar = function(name, value) {
+        return this.emitLine('var ' + name + ' = ' + value + ';');
     }
 
     /**
@@ -152,13 +205,14 @@ function Output(level) {
      * an array of two elements: the first is the name of the variable, the
      * second is the value.
      */
-    this.emitVars() {
+    this.emitVars = function() {
         this.emitIndented('var ' + arguments[0][0] + ' = ' + arguments[0][1]);
         for(var i = 1; i < arguments.length; i++) {
             this.emitRaw(','); // append comma to previous declaration
             this.emitIndented('    ' + arguments[i][0] + ' = ' + arguments[i][1]);
         }
         this.emitRaw(';'); // terminate declaration
+        return this;
     }
 
     /**
@@ -172,145 +226,6 @@ function Output(level) {
     this.render = function() {
         return this.o;
     };
-}
-
-/**
- * Emits the global environment to be placed at the beginning of a module.
- */
-function Setup() {
-    var o = new Output();
-
-    o.emit("function PatternMatchError() {");
-    o.emit("  this.name = \"Pattern Match Failed\";");
-    o.emit("  this.message = \"The given parameters did not match the function's \" +");
-    o.emit("    \"pattern specification.\";");
-    o.emit("}");
-
-    o.emit("function NameError(name) {");
-    o.emit("  this.name = 'No such binding';");
-    o.emit("  this.message = 'There is no binding in scope with name ' + name;");
-    o.emit("}");
-
-    // For a given invocation(params), returns the first alternative that matches
-    o.emit("function findMatch(alts, params) {");
-    o.emit("  for (var i=0; i<alts.length; i++) {");
-    o.emit("    console.log('matching params ' + JSON.stringify(params) + ' to pattern ' + JSON.stringify(alts[i]));");
-    o.emit("    var bindings = matchEquation(alts[i], params);");
-    o.emit("    if(bindings != null) {");
-    o.emit("      console.log('matched equation ' + i);");
-    o.emit("      return { index: i, bindings: bindings };");
-    o.emit("    }");
-    o.emit("  }");
-    o.emit("  return null;");
-    o.emit("}");
-
-    // Returns whether params match an equation's pattern list
-    o.emit("function matchEquation(patterns, params) {")
-    o.emit("  if(patterns.length != params.length) return null;");
-
-    o.emit("  var bindings = [];");
-
-    o.emit("  for (var i=0; i<patterns.length; i++) {");
-    o.emit("    console.log('matching param ' + JSON.stringify(params[i]) + ' to pattern ' + JSON.stringify(patterns[i]));");
-    o.emit("    var m = matchParam(patterns[i], params[i]);");
-    o.emit("    if (m == null) return null;");
-    o.emit("    bindings = bindings.concat(m);");
-    o.emit("  }");
-
-    o.emit("  return bindings;");
-    o.emit("}");
-
-    // Checks whether a given pattern matchs a value.
-    o.emit("function matchParam(pat, param) {");
-    o.emit("  console.log('matching param');");
-
-    o.emit("  if(pat.wildcard) {");
-    o.emit("    console.log('matched wildcard');");
-    o.emit("    return [];");
-    o.emit("  }");
-
-    o.emit("  if(pat.variable) {");
-    o.emit("    console.log('matched variable');");
-    o.emit("    return [[pat.variable.ident, param]];");
-    o.emit("  }");
-
-    o.emit("  if(pat.literal) {");
-    o.emit("    console.log('matching literal');");
-
-    o.emit("    if(pat.literal.bool === param) {");
-    o.emit("      console.log('matched bool');");
-    o.emit("      return [];");
-    o.emit("    }");
-
-    o.emit("    if(pat.literal.int === param) {");
-    o.emit("      console.log('matched int');");
-    o.emit("      return [];");
-    o.emit("    }");
-
-    o.emit("    if(pat.literal.str === param) {");
-    o.emit("      console.log('matched str');");
-    o.emit("      return [];");
-    o.emit("    }");
-
-    o.emit("    if(typeof pat.literal.array !== 'undefined') {");
-
-    o.emit("      if(param instanceof Array) {");
-    o.emit("        console.log('array type match failed');");
-    o.emit("        return null;");
-    o.emit("      }");
-
-    o.emit("      if(param.length !== pat.literal.tuple.length) {");
-    o.emit("        console.log('array length match failed');");
-    o.emit("        return null;");
-    o.emit("      }");
-
-    o.emit("      var bindings = [];");
-    o.emit("      for(var i = 0; i < pat.literal.tuple.length; i++)");
-    o.emit("        bindings = bindings.concat(")
-    o.emit("            matchParam(pat.literal.tuple[i], param[i]));");
-
-    o.emit("      console.log('matched array');");
-    o.emit("      return bindings;");
-
-    o.emit("    }");
-
-    o.emit("    if(typeof pat.literal.obj !== 'undefined') {");
-    o.emit("      if(typeof param !== 'object') {");
-    o.emit("        console.log('object type match failed');");
-    o.emit("        return null;");
-    o.emit("      }");
-    o.emit("      if(!pat.literal.obj.name.wildcard && ( pat.literal.obj.name.str_lit !== param.name || param.value == null ) ) {");
-    o.emit("        console.log('object pattern value match failed');");
-    o.emit("        return null;");
-    o.emit("      }");
-    o.emit("      console.log('matched object head');");
-    o.emit("      return matchParam(pat.literal.obj.pattern, param.value);");
-    o.emit("    }");
-
-    o.emit("  }");
-
-    o.emit("  console.log('unknown pattern failure');");
-    o.emit("  return null;");
-    o.emit("}");
-
-    return o.render();
-}
-
-function Program(program) {
-    var o = new Output();
-    o.emit(Setup());
-
-    var ir = preprocess(program);
-
-    o.emit(ir.include);
-
-    program.declarations.forEach(function(decl) {
-        o.emit(Declaration(decl));
-    });
-
-    o.emit("console.log(" + hexify(emojiLiterals.FOUR_LEAF_CLOVER) + "([]));");
-
-    return o.render();
 }
 
 /**
@@ -372,18 +287,173 @@ function hexify(identifier) {
     return result
 }
 
-function Statement(stmt) {
-    var o = new Output();
-
-    if (stmt.include) {
-
-    } else if (stmt.import) {
-        var name = stmt.import.source ? stmt.import.source.ident : stmt.import.compiled;
-        o.emit('var ' + name + ' = require("./' + name + '");'); // Require the file
-    } else {
-        console.error("declaration type not matched: " + JSON.stringify(decl));
-        throw new Error("unmatched declaration");
+/**
+ * From a list of patterns, determine the sequence of bindings that it should
+ * generate.
+ * The result is a list of identifiers, which must be hexified before being
+ * emitted.
+ */
+function determineBindings(patterns, depth) {
+    var d = typeof depth === 'undefined' ? 0 : depth;
+    //console.log('determineBindings ' + d + ': ' + JSON.stringify(patterns));
+    if(patterns.length !== 0) {
+        var p = patterns[0];
+        if(p.variable) {
+            var v = p.variable.ident;
+            //console.log('determineBindings ' + d + ': found variable ' + v);
+            return [v].concat(
+                determineBindings(patterns.slice(1), d + 1)
+            );
+        }
+        else if(p.literal) {
+            //console.log('determineBindings ' + d + ': found literal');
+            var l = p.literal;
+            if(l.tuple)
+                return determineBindings(l.tuple, d + 1);
+            else if(l.obj) {
+                var o = l.obj;
+                if(typeof o.pattern !== 'undefined')
+                    return determineBindings([o.pattern], d + 1);
+            }
+        }
     }
+    else return [];
+
+    //console.log('determineBindings ' + d + ': no bindings');
+
+    return determineBindings(patterns.slice(1)); // no bindings
+}
+
+/**
+ * Emits the global environment to be placed at the beginning of a module.
+ */
+function Setup() {
+    return new Output()
+
+    .pushFunction('PatternMatchError', [ 'msg' ])
+        .emitStmt('this.message = msg')
+        .emitStmt('Error.captureStackTrace(this, this.constructor)')
+    .pop()
+
+    .emitStmt('PatternMatchError.prototype.__proto__ = error.prototype')
+    .emitStmt('PatternMatchError.prototype.name = "PatternMatchError"')
+
+    .pushFunction('findMatch', ['alts', 'params'])
+        .pushFor(['var i = 0', 'i < alts.length', 'i++'])
+            //.emitstmt([
+            //    'console.log("match> matching params " + json.stringify(params)',
+            //    '+ " to pattern " + json.stringify(alts[i]))'
+            //].join(''))
+            //.emitstmt('console.log("equation> " + i)')
+            .emitVar('bindings', 'matchEquation(alts[i], params)')
+            .pushIf('bindings != null')
+                //.emitstmt('console.log("match> matched equation " + i)')
+                .emitReturn('{ index: i, bindings: bindings }')
+            .pop()
+        .pop()
+        .emitReturn('null')
+    .pop()
+
+
+    .pushFunction('matchEquation', ['patterns', 'params'])
+        .pushIf('patterns.length != params.length')
+            .emitReturn('null')
+        .pop()
+        .emitVar('bindings', '[]')
+        .pushFor(['var i = 0', 'i < patterns.length', 'i++'])
+            .emitVar('m', 'matchParam(patterns[i], params[i])')
+            .pushIf('m == null').emitReturn('null').pop()
+            .emitStmt('bindings = bindings.concat(m)')
+        .pop()
+        .emitReturn('bindings')
+    .pop()
+
+    // // returns whether params match an equation's pattern list
+    // o.emit("function matchequation(patterns, params) {")
+    // o.emit("  if(patterns.length != params.length) return null;");
+
+    // o.emit("  var bindings = [];");
+
+    // o.emit("  for (var i=0; i<patterns.length; i++) {");
+    // o.emit("    var m = matchparam(patterns[i], params[i]);");
+    // o.emit("    if (m == null) return null;");
+    // o.emit("    bindings = bindings.concat(m);");
+    // o.emit("  }");
+
+    // o.emit("  return bindings;");
+    // o.emit("}");
+
+    .pushFunction('matchparam', ['pat', 'param'])
+        .pushIf('pat.wildcard')
+            .emitReturn('[]')
+        .pop()
+        .pushIf('pat.variable')
+            .emitReturn('[[pat.variable.ident, param]]')
+        .pop()
+        .pushIf('pat.literal')
+            .pushIf('pat.literal.int === param')
+                .emitReturn('[]')
+            .pop()
+            .pushIf('pat.literal.str === param')
+                .emitReturn('[]')
+            .pop()
+            .pushIf('pat.literal.tuple !== "undefined"')
+                .pushIf('!param instanceof array')
+                    .emitReturn('null')
+                .pop()
+                .pushIf('param.length !== pat.literal.tuple.length')
+                    .emitReturn('null')
+                .pop()
+                .emitVar('bindings', '[]')
+                .pushFor(['var i = 0', 'i < param.length', 'i++'])
+                    .emitStmt(
+                        [
+                            'bindings = bindings.concat(',
+                            '  matchParam(pat.literal.tuple[i], param[i])',
+                            ')'
+                        ].join('')
+                    )
+                .pop()
+                .emitReturn('bindings')
+            .pop()
+            .pushIf('typeof pat.literal.obj !== "undefined"')
+                .emitVar('objpat', 'pat.literal.obj')
+                .pushIf('typeof param !== "object"')
+                    .emitReturn('null')
+                .pop()
+                .pushIf(
+                    [
+                        '!objpat.name.wildcard && objpat.name.str_lit',
+                        '!=',
+                        'param.name'
+                    ].join(' ')
+                )
+                    .emitReturn('null')
+                .pop()
+                .pushIf('!objpat.pattern.wildcard && param.value == null')
+                    .pop('null')
+                .pop()
+                .emitReturn('matchParam(pat.literal.obj.pattern, param.value)')
+            .pop()
+        .pop()
+        .emitReturn('null')
+    .pop()
+    .render()
+}
+
+function Program(program) {
+    var o = new Output();
+    o.emit(Setup());
+
+    var ir = preprocess(program);
+
+    o.emit(ir.include);
+
+    program.declarations.forEach(function(decl) {
+        o.emit(Declaration(decl));
+    });
+
+    o.emit("console.log(" + hexify(emojiLiterals.FOUR_LEAF_CLOVER) + "([]));");
 
     return o.render();
 }
@@ -392,15 +462,14 @@ function Declaration(decl) {
     var o = new Output();
 
     if (decl.func) { // Function declaration
-        console.log("declaring function " + decl.func.name.ident);
         o.emit(FunctionDeclaration(decl.func));
     } else if (decl.ffi) {
-        o.emit("function " + hexify(decl.ffi.name.ident) + "(params) {");
-        o.emit("  return " + decl.ffi.externalName + ".apply(this, params);");
-        o.emit("};");
+        o.pushFunction(hexify(decl.ffi.name.ident), ['params'])
+            .emitReturn(decl.ffi.externalName + ".apply(this, params)")
+        .pop();
     } else {
         console.error("declaration type not matched: " + JSON.stringify(decl));
-        throw new Error("unmatched declaration");
+        throw new CompilationError("unmatched declaration");
     }
 
     return o.render();
@@ -410,11 +479,9 @@ function FunctionDeclaration(func) {
     var name = func.name.ident;
     var o = new Output();
 
-    console.log('emitting function ' + name);
-
     o.emit("function " + hexify(name) + "(params) {");
 
-    o.emit("console.log('invoking function " + name + ".');");
+    //o.emit("console.log('invoking function " + name + ".');");
 
     var equations = func.alternatives.map(
         function(alt) {
@@ -439,50 +506,15 @@ function FunctionDeclaration(func) {
 
     o.emit("  var alternatives = " + alternatives +";");
     o.emit("  var pmatch = findMatch(alternatives, params);");
-    o.emit("  if(pmatch != null)");
-    o.emit("    return functions[pmatch.index].apply(this, pmatch.bindings);");
+    o.emit("  if(pmatch != null) {");
+    o.emit("    var args = pmatch.bindings.map(function(b) { return b[1]; });");
+    o.emit("    return functions[pmatch.index].apply(this, args);");
+    o.emit("  }");
     o.emit("  else");
     o.emit("    throw new PatternMatchError();");
     o.emit("}");
 
     return o.render();
-}
-
-/**
- * From a list of patterns, determine the sequence of bindings that it should
- * generate.
- * The result is a list of identifiers, which must be hexified before being
- * emitted.
- */
-function determineBindings(patterns, depth) {
-    var d = typeof depth === 'undefined' ? 0 : depth;
-    console.log('determineBindings ' + d + ': ' + JSON.stringify(patterns));
-    if(patterns.length !== 0) {
-        var p = patterns[0];
-        if(p.variable) {
-            var v = p.variable.ident;
-            console.log('determineBindings ' + d + ': found variable ' + v);
-            return [v].concat(
-                determineBindings(patterns.slice(1), d + 1)
-            );
-        }
-        else if(p.literal) {
-            console.log('determineBindings ' + d + ': found literal');
-            var l = p.literal;
-            if(l.tuple)
-                return determineBindings(l.tuple, d + 1);
-            else if(l.obj) {
-                var o = l.obj;
-                if(typeof o.pattern !== 'undefined')
-                    return determineBindings([o.pattern], d + 1);
-            }
-        }
-    }
-    else return [];
-
-    console.log('determineBindings ' + d + ': no bindings');
-
-    return determineBindings(patterns.slice(1)); // no bindings
 }
 
 /**
@@ -501,13 +533,19 @@ function Expression(value) {
 
         var head = value[0];
 
-        o.emit("(" + Expression(head) + ")([" + 
+        var e = Expression(head);
+
+        o.emit("(function() {");
+        //o.emit("  console.log('invoking function " + e + ".');");
+        o.emit("  var r = (" + e + ")([" +
                value.slice(1).map(function(b) {
-                   var b_ = Expression(b);
-                   return b_;
+                   return Expression(b);
                }).join(', ') +
                    "])"
         );
+        //o.emit("  console.log('result ' + JSON.stringify(r) + '.');");
+        o.emit("  return r;");
+        o.emit("})()");
     }
     else { // then the value is an identifier or a literal
         if(typeof value.literal !== 'undefined') {
@@ -556,34 +594,4 @@ function Literal(literal) {
     }
 
     return o;
-}
-
-/**
- * Emit a function definition to check a pattern match.
- * On failure, a PatternMatchError exception is thrown.
- * On success, an association list of strings to values is created,
- * representing a map from names to the matched values.
- */
-function PatternMatch(patterns) {
-    console.log("creating a pattern matcher for " + patterns.length + " patterns");
-    var o = new Output();
-
-    o.emit("function (params) {");
-
-    o.emit("  if(params.length !== " + patterns.length + ")");
-    o.emit("    throw new PatternMatchError();");
-
-    o.emit("  var bindings = [];");
-
-    for(var i = 0; i < patterns.length; i++) {
-        o.emit("  bindings = bindings.concat(checkParam(" +
-                JSON.stringify(patterns[i]) + ", " +
-                "params[" + i + "]));"
-        );
-    }
-
-    o.emit("  return bindings;");
-    o.emit("}");
-
-    return o.render();
 }
