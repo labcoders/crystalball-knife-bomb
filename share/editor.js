@@ -8,24 +8,24 @@ var jqxTheme = 'metrodark';
 $(document).ready(function() {
 	if (location.hash != "")
 		loadProgram();
-	window.addEventListener("hashchange", loadProgram);
+	//window.addEventListener("hashchange", loadProgram);
 
-	$('#mainSplitter').jqxSplitter(
-		{theme: jqxTheme,
+	$('#mainSplitter').jqxSplitter({
+		theme: jqxTheme,
 		width: '100%',
 		height: '100%',
 		orientation: 'vertical',
 		panels: [{ size: 300, collapsible: true},{collapsible: false}]
 	});
-    $('#leftSplitter').jqxSplitter(
-    	{theme: jqxTheme,
+    $('#leftSplitter').jqxSplitter({
+    	theme: jqxTheme,
     	width: '100%',
     	height: '100%',
     	orientation: 'horizontal',
     	panels: [{ size: '30%'}]
     });
-    $('#rightSplitter').jqxSplitter(
-    	{theme: jqxTheme,
+    $('#rightSplitter').jqxSplitter({
+    	theme: jqxTheme,
     	width: '100%',
     	height: '100%',
     	orientation: 'horizontal',
@@ -88,13 +88,29 @@ $(document).ready(function() {
 	});
 	$("#search").on("input select", searchEmojis); // input: value changed, select: autocomplete selected
 
-	$('#source').jqxEditor({
+	/*$('#source').jqxEditor({
 		theme: jqxTheme,
 		width: '100%',
 		height: '100%',
-		pasteMode: 'text',
+		pasteMode: 'html',
 		tools: 'bold italic underline | left center right' 
+	});*/
+
+	$('#all-emoji').on('click', '[class*=emojione-]', function(e) {
+		console.log("Inserting",$(e.target).prop('outerHTML'));
+		document.getElementById('source').focus();
+		//$('#source').focus();
+		pasteHtmlAtCaret($(e.target).prop('outerHTML'), false);
+		//pasteHtmlAtCaret('<div style="background-color:red; width:30px; height:30px;"></div>', false);
+		//$('#source').('execute', 'insertHTML', $(e.target).prop('outerHTML'));
+		return false;
 	});
+
+	document.getElementById("paste").onclick = function() {
+	    document.getElementById('source').focus();
+	    pasteHtmlAtCaret('<div style="background-color:red; width:30px; height:30px;"></div>', false);
+	    return false;
+	};
 });
 
 function emoji2URL(emoji) {
@@ -103,8 +119,56 @@ function emoji2URL(emoji) {
 
 function emoji2img(emoji) {
 	//console.log(emoji.unicode, Number('0x'+emoji.unicode))
-	return '<img src="'+emoji2URL(emoji)+'" class="emojione" title="'+emoji.name+'"/>';//alt="'+String.fromCodePoint(Number('0x'+emoji.unicode))+'" />';
+	//return '<img src="'+emoji2URL(emoji)+'" class="emojione" title="'+emoji.name+'"/>';//alt="'+String.fromCodePoint(Number('0x'+emoji.unicode))+'" />';
 	//return emojione.toImage(emoji.shortname)
+	return '<input type="button" class="emojione-'+emoji.unicode+'" title="'+emoji.name+'" alt="'+emoji.shortname.slice(1, emoji.shortname.length-2)+'"  unselectable="on" />'
+}
+
+function pasteHtmlAtCaret(html, selectPastedContent) {
+    var sel, range;
+    if (window.getSelection) {
+        // IE9 and non-IE
+        sel = window.getSelection();
+        if (sel.getRangeAt && sel.rangeCount) {
+            range = sel.getRangeAt(0);
+            range.deleteContents();
+
+            // Range.createContextualFragment() would be useful here but is
+            // only relatively recently standardized and is not supported in
+            // some browsers (IE9, for one)
+            var el = document.createElement("div");
+            el.innerHTML = html;
+            var frag = document.createDocumentFragment(), node, lastNode;
+            while ( (node = el.firstChild) ) {
+                lastNode = frag.appendChild(node);
+            }
+            var firstNode = frag.firstChild;
+            range.insertNode(frag);
+            
+            // Preserve the selection
+            if (lastNode) {
+                range = range.cloneRange();
+                range.setStartAfter(lastNode);
+                if (selectPastedContent) {
+                    range.setStartBefore(firstNode);
+                } else {
+                    range.collapse(true);
+                }
+                sel.removeAllRanges();
+                sel.addRange(range);
+            }
+        }
+    } else if ( (sel = document.selection) && sel.type != "Control") {
+        // IE < 9
+        var originalRange = sel.createRange();
+        originalRange.collapse(true);
+        sel.createRange().pasteHTML(html);
+        if (selectPastedContent) {
+            range = sel.createRange();
+            range.setEndPoint("StartToStart", originalRange);
+            range.select();
+        }
+    }
 }
 
 function searchEmojis() {
@@ -133,7 +197,7 @@ var charToIMG = function(c) {
 	
 }
 
-var loadProgram = function() {
+/*var loadProgram = function() {
 	console.log("loading a program!", location.hash.substring(1));
 	var query = new Parse.Query(Program);
 	query.get(location.hash.substring(1), {
@@ -145,7 +209,7 @@ var loadProgram = function() {
 			alert("Error, the load failed. More info in console.");
 		}
 	});
-}
+}*/
 
 var save = function() {
 	var program = new Program();

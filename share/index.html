@@ -1,11 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="keywords" content="jQuery Splitter, Splitter Widget, Splitter, jqxSplitter" />
+    <meta content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
     <title id='Description'>Emoji Editor</title>
     <link rel="stylesheet" href="jqwidgets/styles/jqx.base.css" type="text/css" />
     <link rel="stylesheet" href="jqwidgets/styles/jqx.metrodark.css" type="text/css" />
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/emojione/1.5.0/assets/css/emojione.min.css" />
+    <link rel="stylesheet" href="jqwidgets/styles/jqx.windowsphone.css" type="text/css" />
+    <link rel="stylesheet" href="jqwidgets/styles/jqx.blackberry.css" type="text/css" />
+    <link rel="stylesheet" href="jqwidgets/styles/jqx.android.css" type="text/css" />
+    <link rel="stylesheet" href="jqwidgets/styles/jqx.mobile.css" type="text/css" />
+
+    <link rel="stylesheet" href="emojione/assets/sprites/emojione.sprites.css" />
     <link rel="stylesheet" href="style.css" type="text/css" />
 
     <script type="text/javascript" src="scripts/jquery-1.11.1.min.js"></script>
@@ -42,10 +47,11 @@
 	    <div>
 	        <div id="rightSplitter">
 	            <div class="panel">
-	                <textarea id="source"></textarea>
+	                <div id="source" contentEditable="true">Here is some nice text</div>
 	            </div>
 	            <div class="panel">
 	                <span>Output</span>
+	                <input type="button" id="paste" value="Paste HTML">
 	            </div>
 	        </div>
 	    </div>
