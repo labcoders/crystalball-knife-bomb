@@ -65,15 +65,19 @@ $(document).ready(function() {
 		}
 
 		$('#all-emoji').jqxTabs('initTabContent', function(tab){
-			//alert("yo "+tab);
-			var content = "";
-			console.log($('#all-emoji').jqxTabs('getTitleAt', tab));
-			emojiByCategory[$('#all-emoji').jqxTabs('getTitleAt', tab)].forEach(function(emoji) {
-				content += emoji2img(emoji);
-			});
-			$('#all-emoji').jqxTabs('setContentAt', tab, content);
+			if (emojiByCategory[$('#all-emoji').jqxTabs('getTitleAt', tab)]) {
+				//alert("yo "+tab);
+				var content = "";
+				//console.log($('#all-emoji').jqxTabs('getTitleAt', tab));
+				emojiByCategory[$('#all-emoji').jqxTabs('getTitleAt', tab)].forEach(function(emoji) {
+					content += emoji2img(emoji);
+				});
+				$('#all-emoji').jqxTabs('setContentAt', tab, content);
+			}
 		});
 	});
+
+	$("#search").on("input", searchEmojis);
 });
 
 function emoji2URL(emoji) {
@@ -86,13 +90,23 @@ function emoji2img(emoji) {
 	//return emojione.toImage(emoji.shortname)
 }
 
-function searchEmoji(str) {
+function searchEmojis() {
+	var minChars = 3;
+	var search = $("#search").val();
 	var content = "";
-	console.log($('#all-emoji').jqxTabs('getTitleAt', tab));
-	emojiByCategory[$('#all-emoji').jqxTabs('getTitleAt', tab)].forEach(function(emoji) {
-		content += emoji2img(emoji);
-	});
-	$('#all-emoji').jqxTabs('setContentAt', tab, content);
+	if (search.length >= minChars) {
+		var searchTerms = search.split(" ");
+		var results = _.filter(emojiDB, function(emoji) {
+			var keywords = emoji.name.split(" ").concat(emoji.keywords);
+			return (_.intersection(searchTerms, keywords).length >= 1);
+		});
+		results.forEach(function(emoji) {
+			content += emoji2img(emoji);
+		});
+	} else {
+		content = "Please enter at least "+minChars+" characters.";
+	}
+	$('#search-results').html(content);
 }
 
 var charToIMG = function(c) {
