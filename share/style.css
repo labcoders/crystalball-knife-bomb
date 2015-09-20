@@ -1,5 +1,44 @@
-#source {
+/*#source {
 	width: 700px;
 	height: 400px;
 	border: 1px solid black;
+}*/
+html, body {
+	width: 100%;
+	height: 100%;
+	margin: 0px;
+	padding: 0px;
+}
+body {
+	overflow:hidden;
+}
+/*#all-emoji > div {
+	width: 100%;
+	height: 100%;
+}*/
+#all-emoji [class*=emojione-] {
+    width: 32px;
+    height: 32px;
+    /*padding: 3px;*/
+    margin: 3px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: transparent;
+}
+#all-emoji [class*=emojione-]:hover {
+    background-color: #666666;
+}
+#search {
+	padding: 2px 10px;
+}
+#source {
+	width: 100%;
+	height: 100%;
+}
+#source [class*=emojione-] {
+	width: 1em;
+	height: 1em;
+	border: none;
+	background-color: transparent;
 }
