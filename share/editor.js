@@ -8,14 +8,34 @@ var jqxTheme = 'metrodark';
 $(document).ready(function() {
 	if (location.hash != "")
 		loadProgram();
-	//window.addEventListener("hashchange", loadProgram);
+	window.addEventListener("hashchange", loadProgram);
+	
+	Parse.initialize("rRc5MWWI4vyZEeshbvZFA1Nz4jKP6UCrgILPXQG3", "yPXq3zWBjYJpoOFsZWDisXYXdKxv6fblQdIMw5Nn");
+	Program = Parse.Object.extend("Program");
+
+	$('#menu').jqxMenu({
+		theme: jqxTheme,
+		width: '100%',
+		height: '100%',
+	});
+	$('#menu').css('visibility', 'visible');
+
+	$('#menuSplitter').jqxSplitter({
+		theme: jqxTheme,
+		width: '100%',
+		height: '100%',
+		orientation: 'horizontal',
+		panels: [{ size: '30px'}],
+		showSplitBar: false,
+		resizable: false
+	});
 
 	$('#mainSplitter').jqxSplitter({
 		theme: jqxTheme,
 		width: '100%',
 		height: '100%',
 		orientation: 'vertical',
-		panels: [{ size: 300, collapsible: true},{collapsible: false}]
+		panels: [{ size: 500, collapsible: true},{collapsible: false}]
 	});
     $('#leftSplitter').jqxSplitter({
     	theme: jqxTheme,
@@ -31,9 +51,6 @@ $(document).ready(function() {
     	orientation: 'horizontal',
     	panels: [{ size: '60%', collapsible: false}]
     });
-
-	Parse.initialize("rRc5MWWI4vyZEeshbvZFA1Nz4jKP6UCrgILPXQG3", "yPXq3zWBjYJpoOFsZWDisXYXdKxv6fblQdIMw5Nn");
-	Program = Parse.Object.extend("Program");
 
 	$.getJSON("emoji.json", function(data) {
 		emojiDB = data;
@@ -105,12 +122,6 @@ $(document).ready(function() {
 		//$('#source').('execute', 'insertHTML', $(e.target).prop('outerHTML'));
 		return false;
 	});
-
-	document.getElementById("paste").onclick = function() {
-	    document.getElementById('source').focus();
-	    pasteHtmlAtCaret('<div style="background-color:red; width:30px; height:30px;"></div>', false);
-	    return false;
-	};
 });
 
 function emoji2URL(emoji) {
@@ -197,7 +208,7 @@ var charToIMG = function(c) {
 	
 }
 
-/*var loadProgram = function() {
+var loadProgram = function() {
 	console.log("loading a program!", location.hash.substring(1));
 	var query = new Parse.Query(Program);
 	query.get(location.hash.substring(1), {
@@ -209,7 +220,7 @@ var charToIMG = function(c) {
 			alert("Error, the load failed. More info in console.");
 		}
 	});
-}*/
+}
 
 var save = function() {
 	var program = new Program();

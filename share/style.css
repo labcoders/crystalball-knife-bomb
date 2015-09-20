@@ -33,12 +33,21 @@ body {
 	padding: 2px 10px;
 }
 #source {
-	width: 100%;
-	height: 100%;
+	font: 36px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
 }
 #source [class*=emojione-] {
 	width: 1em;
 	height: 1em;
 	border: none;
 	background-color: transparent;
+}
+#output {
+	font: 16px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+}
+#source, #output {
+	padding: 5px;
+    color: #DDDDDD;
+}
+#search:focus, #source:focus, #output:focus {
+	background-color: #161616;
 }

@@ -5,12 +5,13 @@
     <title id='Description'>Emoji Editor</title>
     <link rel="stylesheet" href="jqwidgets/styles/jqx.base.css" type="text/css" />
     <link rel="stylesheet" href="jqwidgets/styles/jqx.metrodark.css" type="text/css" />
-    <link rel="stylesheet" href="jqwidgets/styles/jqx.windowsphone.css" type="text/css" />
+    <!--<link rel="stylesheet" href="jqwidgets/styles/jqx.windowsphone.css" type="text/css" />
     <link rel="stylesheet" href="jqwidgets/styles/jqx.blackberry.css" type="text/css" />
     <link rel="stylesheet" href="jqwidgets/styles/jqx.android.css" type="text/css" />
-    <link rel="stylesheet" href="jqwidgets/styles/jqx.mobile.css" type="text/css" />
+    <link rel="stylesheet" href="jqwidgets/styles/jqx.mobile.css" type="text/css" />-->
 
     <link rel="stylesheet" href="emojione/assets/sprites/emojione.sprites.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="style.css" type="text/css" />
 
     <script type="text/javascript" src="scripts/jquery-1.11.1.min.js"></script>
@@ -24,37 +25,51 @@
     <script type="text/javascript" src="jqwidgets/jqxbuttons.js"></script>
     <script type="text/javascript" src="jqwidgets/jqxinput.js"></script>
     <script type="text/javascript" src="jqwidgets/jqxeditor.js"></script>
+    <script type="text/javascript" src="jqwidgets/jqxmenu.js"></script>
 
     <script type="text/javascript" src="editor.js"></script>
 </head>
 <body class='default'>
-	<div id="mainSplitter">
+	<div id="menuSplitter">
 		<div>
-	        <div id="leftSplitter">
-	            <div class="panel" id="constructs">
-		    	</div>
-	            <div class="panel" id="all-emoji">
-		            <ul>
-		            	<li style="margin-left: 30px;">Search</li>
-		            </ul>
-		            <div>
-		            	<input type="text" id="search" />
-		            	<div id="search-results"></div>
-		            </div>
-	            </div>
-	        </div>
-        </div>
-	    <div>
-	        <div id="rightSplitter">
-	            <div class="panel">
-	                <div id="source" contentEditable="true">Here is some nice text</div>
-	            </div>
-	            <div class="panel">
-	                <span>Output</span>
-	                <input type="button" id="paste" value="Paste HTML">
-	            </div>
-	        </div>
-	    </div>
+			<div id="menu" style='visibility: hidden; padding-left: 5px;'>
+				<ul>
+					<li><i class="fa fa-file-o"></i> New</li>
+					<li><i class="fa fa-cloud"></i> Save</li>
+					<li><i class="fa fa-cogs"></i> Compile</li>
+					<li><i class="fa fa-play"></i> Run</li>
+				</ul>
+			</div>
+		</div>
+		<div>
+			<div id="mainSplitter">
+				<div>
+			        <div id="leftSplitter">
+			            <div class="panel" id="constructs">
+				    	</div>
+			            <div class="panel" id="all-emoji">
+				            <ul>
+				            	<li style="margin-left: 30px;">Search</li>
+				            </ul>
+				            <div>
+				            	<input type="text" id="search" />
+				            	<div id="search-results"></div>
+				            </div>
+			            </div>
+			        </div>
+		        </div>
+			    <div>
+			        <div id="rightSplitter">
+			            <div class="panel" id="source" contentEditable="true">
+			                Here is some nice text
+			            </div>
+			            <div class="panel" id="output">
+			                <span>Output</span>
+			            </div>
+			        </div>
+			    </div>
+			</div>
+		</div>
 	</div>
 </body>
 </html>
