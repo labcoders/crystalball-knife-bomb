@@ -78,7 +78,7 @@ function Output(indentLevel, parent) {
      */
     this.createInner = function(amount) {
         var indent = typeof amount === 'undefined' ? 1 : amount;
-        console.log('nesting to indent ' + (this.level + indent));
+        //console.log('nesting to indent ' + (this.level + indent));
         return new Output(this.level + indent, this);
     }
 
@@ -98,7 +98,7 @@ function Output(indentLevel, parent) {
      */
     this.emitRaw = function() {
         for(var i = 0; i < arguments.length; i++) {
-            process.stdout.write(arguments[i]);
+            //process.stdout.write(arguments[i]);
             this.o += arguments[i];
         }
         return this;
@@ -141,7 +141,7 @@ function Output(indentLevel, parent) {
         var p = this.createInner();
         p.pop = function() {
             var r = this.parent.embed(p).emitLine('}');
-            console.error('pop to ' + p.level + ' -> ' + this.parent.level);
+            //console.error('pop to ' + p.level + ' -> ' + this.parent.level);
             return r;
         };
         return p;
@@ -153,7 +153,7 @@ function Output(indentLevel, parent) {
         var p = this.createInner();
         p.pop = function() {
             var r = this.parent.embed(p).emitLine('}');
-            console.error('pop to ' + p.level + ' -> ' + this.parent.level);
+            //console.error('pop to ' + p.level + ' -> ' + this.parent.level);
             return r;
         };
         return p;
@@ -169,7 +169,7 @@ function Output(indentLevel, parent) {
         var p = this.createInner();
         p.pop = function() {
             var r = this.parent.embed(p).emitLine('}');
-            console.error('pop to ' + p.level + ' -> ' + this.parent.level);
+            //console.error('pop to ' + p.level + ' -> ' + this.parent.level);
             return r;
         };
 
@@ -185,10 +185,14 @@ function Output(indentLevel, parent) {
         var p = this.createInner();
         p.pop = function() {
             var r = this.parent.embed(p);
-            console.error('pop to ' + p.level + ' -> ' + this.parent.level);
+            //console.error('pop to ' + p.level + ' -> ' + this.parent.level);
             return r;
         };
         return p;
+    }
+
+    this.emitArray = function(array) {
+        return this.emitRaw('[ ').emitRaw(array.join(', ')).emitRaw(' ]');
     }
 
     /**
@@ -196,6 +200,30 @@ function Output(indentLevel, parent) {
      */
     this.emitVar = function(name, value) {
         return this.emitLine('var ' + name + ' = ' + value + ';');
+    }
+
+    this.embedVar = function(name, o) {
+        return this.emitLine('var ' + name + ' = ' + o.render() + ';');
+    }
+
+    this.popPushElse = function() {
+        return this
+        .pop()
+        .pushElse();
+    }
+
+    this.pushElse = function() {
+        this.emitLine('else {');
+
+        var p = this.createInner();
+        p.pop = function() {
+            return this.parent.embed(p).emitLine('}');
+        };
+        return p
+    }
+
+    this.emitThrow = function(t) {
+        return this.emitStmt('throw ' + t);
     }
 
     /**
@@ -324,18 +352,13 @@ function determineBindings(patterns, depth) {
     return determineBindings(patterns.slice(1)); // no bindings
 }
 
-/**
- * Emits the global environment to be placed at the beginning of a module.
- */
-function Setup() {
-    return new Output()
-
+var setup = new Output()
     .pushFunction('PatternMatchError', [ 'msg' ])
         .emitStmt('this.message = msg')
         .emitStmt('Error.captureStackTrace(this, this.constructor)')
     .pop()
 
-    .emitStmt('PatternMatchError.prototype.__proto__ = error.prototype')
+    .emitStmt('PatternMatchError.prototype.__proto__ = Error.prototype')
     .emitStmt('PatternMatchError.prototype.name = "PatternMatchError"')
 
     .pushFunction('findMatch', ['alts', 'params'])
@@ -354,7 +377,6 @@ function Setup() {
         .emitReturn('null')
     .pop()
 
-
     .pushFunction('matchEquation', ['patterns', 'params'])
         .pushIf('patterns.length != params.length')
             .emitReturn('null')
@@ -368,22 +390,7 @@ function Setup() {
         .emitReturn('bindings')
     .pop()
 
-    // // returns whether params match an equation's pattern list
-    // o.emit("function matchequation(patterns, params) {")
-    // o.emit("  if(patterns.length != params.length) return null;");
-
-    // o.emit("  var bindings = [];");
-
-    // o.emit("  for (var i=0; i<patterns.length; i++) {");
-    // o.emit("    var m = matchparam(patterns[i], params[i]);");
-    // o.emit("    if (m == null) return null;");
-    // o.emit("    bindings = bindings.concat(m);");
-    // o.emit("  }");
-
-    // o.emit("  return bindings;");
-    // o.emit("}");
-
-    .pushFunction('matchparam', ['pat', 'param'])
+    .pushFunction('matchParam', ['pat', 'param'])
         .pushIf('pat.wildcard')
             .emitReturn('[]')
         .pop()
@@ -397,10 +404,11 @@ function Setup() {
             .pushIf('pat.literal.str === param')
                 .emitReturn('[]')
             .pop()
-            .pushIf('pat.literal.tuple !== "undefined"')
-                .pushIf('!param instanceof array')
+            .pushIf('typeof pat.literal.tuple !== "undefined"')
+                .pushIf('!param instanceof Array')
                     .emitReturn('null')
                 .pop()
+                .emitStmt('console.log(JSON.stringify(pat.literal.tuple))')
                 .pushIf('param.length !== pat.literal.tuple.length')
                     .emitReturn('null')
                 .pop()
@@ -431,26 +439,24 @@ function Setup() {
                     .emitReturn('null')
                 .pop()
                 .pushIf('!objpat.pattern.wildcard && param.value == null')
-                    .pop('null')
+                    .emitReturn('null')
                 .pop()
                 .emitReturn('matchParam(pat.literal.obj.pattern, param.value)')
             .pop()
         .pop()
         .emitReturn('null')
-    .pop()
-    .render()
-}
+    .pop();
 
 function Program(program) {
     var o = new Output();
-    o.emit(Setup());
+    o.embed(setup);
 
     var ir = preprocess(program);
 
     o.emit(ir.include);
 
     program.declarations.forEach(function(decl) {
-        o.emit(Declaration(decl));
+        o.embed(Declaration(decl));
     });
 
     o.emit("console.log(" + hexify(emojiLiterals.FOUR_LEAF_CLOVER) + "([]));");
@@ -462,59 +468,58 @@ function Declaration(decl) {
     var o = new Output();
 
     if (decl.func) { // Function declaration
-        o.emit(FunctionDeclaration(decl.func));
+        o.embed(FunctionDeclaration(decl.func));
     } else if (decl.ffi) {
-        o.pushFunction(hexify(decl.ffi.name.ident), ['params'])
-            .emitReturn(decl.ffi.externalName + ".apply(this, params)")
-        .pop();
+        o.embed(FfiDeclaration(decl.ffi));
     } else {
-        console.error("declaration type not matched: " + JSON.stringify(decl));
         throw new CompilationError("unmatched declaration");
     }
 
-    return o.render();
+    return o;
+}
+
+function FfiDeclaration(ffi) {
+    return new Output()
+        .pushFunction(hexify(ffi.name.ident), ['params'])
+            .emitReturn(ffi.externalName + ".apply(this, params)")
+        .pop();
 }
 
 function FunctionDeclaration(func) {
     var name = func.name.ident;
-    var o = new Output();
 
-    o.emit("function " + hexify(name) + "(params) {");
-
-    //o.emit("console.log('invoking function " + name + ".');");
-
-    var equations = func.alternatives.map(
-        function(alt) {
-            var bs = determineBindings(alt.patterns);
-            return "function (" +
-                bs.map(hexify).join(', ') +
-                ") {" +
-                "return " + Expression(alt.body) +
-                "}";
-        }
-    ).join(',');
-
-    // Render each function body into an array
-    var fns = "var functions = [" + equations + '];';
-
-    //console.log("functions: " + fns);
-    o.emit(fns);
-
+    // stick the syntax tree for the patterns straight into the output
     var alternatives = JSON.stringify(func.alternatives.map(function(alt) {
         return alt.patterns;
     }));
 
-    o.emit("  var alternatives = " + alternatives +";");
-    o.emit("  var pmatch = findMatch(alternatives, params);");
-    o.emit("  if(pmatch != null) {");
-    o.emit("    var args = pmatch.bindings.map(function(b) { return b[1]; });");
-    o.emit("    return functions[pmatch.index].apply(this, args);");
-    o.emit("  }");
-    o.emit("  else");
-    o.emit("    throw new PatternMatchError();");
-    o.emit("}");
-
-    return o.render();
+    // the output is just a function here
+    return new Output()
+        .pushFunction(hexify(name), ['params'])
+        .embedVar(
+            'functions', 
+            new Output().emitArray(
+                func.alternatives.map(
+                    function(alt) {
+                        var bs = determineBindings(alt.patterns);
+                        return new Output()
+                            .pushFunction(null, bs.map(hexify))
+                                .emitReturn(Expression(alt.body))
+                            .pop()
+                            .render();
+                    }
+                )
+            )
+        )
+        .emitVar('alternatives', alternatives)
+        .emitVar('pmatch', 'findMatch(alternatives, params)')
+        .pushIf('pmatch != null')
+            .emitVar('args', 'pmatch.bindings.map(function(b) { return b[1]; })')
+            .emitReturn('functions[pmatch.index].apply(this, args)')
+        .popPushElse()
+            .emitThrow('new PatternMatchError()')
+        .pop()
+    .pop() // the pushFunction from the beginning
 }
 
 /**
