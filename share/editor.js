@@ -102,7 +102,8 @@ $(document).ready(function() { // Big  setup!
 	    	if (item.value.i)
 	    		addHtmlToSource(shortNamesToHtml(escapeHTML(item.value.i))); // Parse specified html
 		    else if (item.value.s)
-	    		addHtmlToSource(emoji2img(emojiDB[item.value.s])); // Just take its icon/shortcut 
+	    		addHtmlToSource(emoji2img(emojiDB[item.value.s])); // Just take its icon/shortcut
+	    	$("#constructs").jqxTree('selectItem', null);
 		});
 		/*$('#constructs').jqxTree({ source: emojiTree, theme: jqxTheme, width: '100%', height: '100%'});*/
 
@@ -264,7 +265,7 @@ function searchEmojis() {
 function getUnicodeSource() {
 	var content = $('#source').clone();
 	content.find('[class*=emojione-]').replaceWith(function(){return $(this).attr("alt")});
-	return content.html();
+	return content.text();
 }
 function toPairs(text) {
 	return [].map.call(text, function(c){
@@ -392,6 +393,9 @@ var constructsIsh = [
 					{
 						label: "Left Parenthesis",
 						s: "last_quarter_moon_with_face"
+					},{
+						label: "Separator",
+						s: "straight_ruler"
 					}, {
 						label: "Right Parenthesis",
 						s: "first_quarter_moon_with_face"

@@ -27,11 +27,11 @@
 "\uD83D\uDC4D"        return 'TRUE';
 "\uD83D\uDC4E"        return 'FALSE';
 
-((?!\uD83D\uDC89|\uD83C\uDF1C|\u261D|\uD83D\uDCCF|\u270C|\u26A0|[\u0030-\u0039]\u20E3|\uD83C\uDFF4|\uD83C\uDF81|\<|\,|\!|\uD83C\uDCCF|\uD83C\uDF1C|\uD83C\uDF1B|\u261D|\uD83D\uDC48|\uD83D\uDC49|\uD83D\uDCE6|\uD83D\uDCC8|\u2744|\u2196|\u21AA\uFE0F).)+ { return 'IDENT'};
+((?!\uD83D\uDC89|\uD83D\uDC4D|\uD83C\uDF1C|\uD83D\uDCCF|\u270C|\u26A0|[\u0030-\u0039]\u20E3|\uD83C\uDFF4|\uD83C\uDF81|\<|\,|\!|\uD83C\uDCCF|\uD83C\uDF1B|\u261D|\uD83D\uDC48|\uD83D\uDC49|\uD83D\uDCE6|\uD83D\uDCC8|\u2744|\u2196|\u21AA\uFE0F).)+ { return 'IDENT'};
 
 \u270C[^\u270C]+\u270C return 'STR_LIT';
 
-"\uD83D\uDCE6"        return 'PACKAGE';
+"\uD83D\uDCE6"        return 'PACKAGE'; /* :package: */
 "\uD83D\uDCC8"        return 'FUNCTION'; /* chart_with_upwards_trend */
 
 "\u2744"              return 'WILDCARD'; /* snowflake */
