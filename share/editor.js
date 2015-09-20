@@ -29,7 +29,7 @@ $(document).ready(function() {
     	width: '100%',
     	height: '100%',
     	orientation: 'horizontal',
-    	panels: [{ size: '60%'}]
+    	panels: [{ size: '60%', collapsible: false}]
     });
 
 	Parse.initialize("rRc5MWWI4vyZEeshbvZFA1Nz4jKP6UCrgILPXQG3", "yPXq3zWBjYJpoOFsZWDisXYXdKxv6fblQdIMw5Nn");
@@ -78,8 +78,23 @@ $(document).ready(function() {
 		});
 	});
 
-	$("#search").jqxInput({theme: jqxTheme, placeHolder: "Search for an emoji", height: 25, width: 200, minLength: 1,  source: searchAutocomplete });
+	$("#search").jqxInput({
+		theme: jqxTheme,
+		placeHolder: "Search for an emoji",
+		height: 30,
+		width: '100%',
+		minLength: 1,
+		source: searchAutocomplete
+	});
 	$("#search").on("input select", searchEmojis); // input: value changed, select: autocomplete selected
+
+	$('#source').jqxEditor({
+		theme: jqxTheme,
+		width: '100%',
+		height: '100%',
+		pasteMode: 'text',
+		tools: 'bold italic underline | left center right' 
+	});
 });
 
 function emoji2URL(emoji) {
@@ -88,7 +103,7 @@ function emoji2URL(emoji) {
 
 function emoji2img(emoji) {
 	//console.log(emoji.unicode, Number('0x'+emoji.unicode))
-	return '<img src="'+emoji2URL(emoji)+'" class="emojione" />';//alt="'+String.fromCodePoint(Number('0x'+emoji.unicode))+'" />';
+	return '<img src="'+emoji2URL(emoji)+'" class="emojione" title="'+emoji.name+'"/>';//alt="'+String.fromCodePoint(Number('0x'+emoji.unicode))+'" />';
 	//return emojione.toImage(emoji.shortname)
 }
 
