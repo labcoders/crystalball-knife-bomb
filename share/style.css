@@ -12,6 +12,9 @@ html, body {
 body {
 	overflow:hidden;
 }
+.panel {
+	overflow: auto;
+}
 /*#all-emoji > div {
 	width: 100%;
 	height: 100%;
@@ -48,6 +51,6 @@ body {
 	padding: 5px;
     color: #DDDDDD;
 }
-#search:focus, #source:focus, #output:focus {
+#search:focus, #source:focus, #output:hover {
 	background-color: #161616;
 }

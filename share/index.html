@@ -17,27 +17,41 @@
     <script type="text/javascript" src="scripts/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="bower_components/underscore/underscore.js"></script>
 	<script type="text/javascript" src="//www.parsecdn.com/js/parse-1.6.0.min.js"></script>
-	<!--<script src="//cdn.jsdelivr.net/emojione/1.5.0/lib/js/emojione.min.js"></script>-->
+	<script src="//cdn.jsdelivr.net/emojione/1.5.0/lib/js/emojione.min.js"></script>
     <script type="text/javascript" src="jqwidgets/jqxcore.js"></script>
     <script type="text/javascript" src="jqwidgets/jqxsplitter.js"></script>
+    <script type="text/javascript" src="jqwidgets/jqxscrollbar.js"></script>
+    <script type="text/javascript" src="jqwidgets/jqxpanel.js"></script>
     <script type="text/javascript" src="jqwidgets/jqxtree.js"></script>
     <script type="text/javascript" src="jqwidgets/jqxtabs.js"></script>
     <script type="text/javascript" src="jqwidgets/jqxbuttons.js"></script>
     <script type="text/javascript" src="jqwidgets/jqxinput.js"></script>
     <script type="text/javascript" src="jqwidgets/jqxeditor.js"></script>
     <script type="text/javascript" src="jqwidgets/jqxmenu.js"></script>
+    <script type="text/javascript" src="jqwidgets/jqxnotification.js"></script>
+    <script type="text/javascript" src="jqwidgets/jqxwindow.js"></script>
 
-    <script type="text/javascript" src="editor.js"></script>
+    <script type="text/javascript" src="editor.js"></script><!-- IDE -->
+    <script type="text/javascript" src="../parser/emoji.js"></script><!-- Parser -->
+    <script type="text/javascript" src="../parser/codegen.js"></script><!-- Compiler -->
 </head>
 <body class='default'>
 	<div id="menuSplitter">
 		<div>
 			<div id="menu" style='visibility: hidden; padding-left: 5px;'>
 				<ul>
-					<li><i class="fa fa-file-o"></i> New</li>
-					<li><i class="fa fa-cloud"></i> Save</li>
-					<li><i class="fa fa-cogs"></i> Compile</li>
-					<li><i class="fa fa-play"></i> Run</li>
+					<li onclick="newProgram()"><i class="fa fa-file"></i> New</li>
+					<li>
+						<i class="fa fa-folder-open"></i> Examples
+						<ul style="width:200px;">
+							<li><i class="fa fa-hand-paper-o"></i> <i class="fa fa-globe"></i> Hello World</li>
+							<li><i class="fa fa-link"></i> <i class="fa fa-list"></i> Length of Linked List</li>
+						</ul>
+					</li>
+					<li onclick="share()" disabled="disabled"><i class="fa fa-cloud" title="Share with a unique URL"></i> Save</li>
+					<li onclick="compile()"><i class="fa fa-cogs"></i> Compile</li>
+					<li onclick="run()" id="run"><i class="fa fa-play"></i> Run</li>
+					<li><i class="fa fa-info"></i> About</li>
 				</ul>
 			</div>
 		</div>
@@ -47,9 +61,9 @@
 			        <div id="leftSplitter">
 			            <div class="panel" id="constructs">
 				    	</div>
-			            <div class="panel" id="all-emoji">
+			            <div id="all-emoji">
 				            <ul>
-				            	<li style="margin-left: 30px;">Search</li>
+				            	<li style="margin-left: 30px;"><i class="fa fa-search"></i> Search</li>
 				            </ul>
 				            <div>
 				            	<input type="text" id="search" />

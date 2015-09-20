@@ -12,12 +12,12 @@
 
 "\uD83D\uDC89"        return 'INCLUDE'; /* syringe */
 "\uD83C\uDF81"        return 'IMPORT' /* gift, reference to an external library */
-"\u2623"              return 'EXTERN' /*radioactive symbol */
+"\u26A0"              return 'EXTERN' /*warning symbol */
 "\uD83C\uDFF4"        return 'FUNC'; /* waving black flag */
 "\u21AA\uFE0F"        return 'ALT'; /* right hook arrow */
 
-"\uD83D\uDCCF"        return 'SEP';
-"\u2B01"              return 'BIND';
+"\uD83D\uDCCF"        return 'SEP'; /* straight_ruler */
+"\u2196"              return 'BIND'; /* arrow_upper_left */
 "\uD83C\uDF1C"        return "LPAREN";
 "\uD83C\uDF1B"        return "RPAREN";
 "\uD83D\uDC49"        return "LBRACKET";
@@ -27,14 +27,14 @@
 "\uD83D\uDC4D"        return 'TRUE';
 "\uD83D\uDC4E"        return 'FALSE';
 
-((?!\uD83D\uDC89|\uD83C\uDF1C|\u261D|\uD83D\uDCCF|\u270C|\u2623|[\u0030-\u0039]\u20E3|\uD83C\uDFF4|\uD83C\uDF81|\<|\,|\!|\uD83C\uDCCF|\uD83C\uDF1C|\uD83C\uDF1B|\u261D|\uD83D\uDC48|\uD83D\uDC49|\uD83D\uDCE6|\uD83D\uDCC8|\uD83D\uDD73|\u2B01|\u21AA\uFE0F).)+ { return 'IDENT'};
+((?!\uD83D\uDC89|\uD83C\uDF1C|\u261D|\uD83D\uDCCF|\u270C|\u26A0|[\u0030-\u0039]\u20E3|\uD83C\uDFF4|\uD83C\uDF81|\<|\,|\!|\uD83C\uDCCF|\uD83C\uDF1C|\uD83C\uDF1B|\u261D|\uD83D\uDC48|\uD83D\uDC49|\uD83D\uDCE6|\uD83D\uDCC8|\u2744|\u2196|\u21AA\uFE0F).)+ { return 'IDENT'};
 
 \u270C[^\u270C]+\u270C return 'STR_LIT';
 
 "\uD83D\uDCE6"        return 'PACKAGE';
-"\uD83D\uDCC8"        return 'FUNCTION';
+"\uD83D\uDCC8"        return 'FUNCTION'; /* chart_with_upwards_trend */
 
-"\uD83D\uDD73"        return 'WILDCARD';
+"\u2744"              return 'WILDCARD'; /* snowflake */
 
 <<EOF>>               return 'EOF';
 .                     return 'INVALID';

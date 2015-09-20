@@ -1,8 +1,8 @@
-var jison = require('jison');
+/*var jison = require('jison');
 var fs = require('fs'); // To import/include external files
 
 var grammar = fs.readFileSync('emoji.jison', 'utf8');
-var parser = new jison.Parser(grammar);
+var parser = new jison.Parser(grammar);*/
 
 var INDENT = '  ';
 
@@ -10,7 +10,7 @@ var emojiLiterals = {};
 
 emojiLiterals.FOUR_LEAF_CLOVER = "🍀";
 
-exports.traverse = function(ir) {
+var traverse = function(ir) {
     console.log("BEGIN CODE GEN");
     return Program(ir);
 }
